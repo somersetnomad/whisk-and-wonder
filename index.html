@@ -1,0 +1,913 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="A bright, friendly baking club for 8 to 12 year olds: European recipes, a family bake planner, shopping lists and a baking journal.">
+<meta name="robots" content="index,follow">
+<title>Whisk &amp; Wonder</title>
+<style>
+@font-face{font-family:"Bagel Fat One";src:url("fonts/bagel-fat-one-latin-400-normal.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Nunito";src:url("fonts/nunito-latin-400-normal.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Nunito";src:url("fonts/nunito-latin-600-normal.woff2") format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Nunito";src:url("fonts/nunito-latin-800-normal.woff2") format("woff2");font-weight:800;font-display:swap}
+@font-face{font-family:"Nunito";src:url("fonts/nunito-latin-900-normal.woff2") format("woff2");font-weight:900;font-display:swap}
+html{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}
+
+/* Layout: chunky "cookie-cutter" sticker cards with thick ink outlines on a sprinkle-dotted buttercup ground; tabbed app, one column on phones */
+:root{
+  --bg:#FFF2BF; --bg-dot1:#FF4F7B; --bg-dot2:#21C6A0; --bg-dot3:#4D9DFF;
+  --paper:#FFFFFF; --paper-2:#FFF8E1;
+  --ink:#2A2160; --muted:#5E5790; --line:#2A2160; --shadow:#2A2160;
+  --berry:#FF4F7B; --mango:#FFB627; --mint:#21C6A0; --sky:#4D9DFF; --lilac:#B69CFF;
+  --berry-soft:#FFD6E1; --mint-soft:#CDF5EA; --sky-soft:#D7E8FF; --mango-soft:#FFE7B0;
+  --on-accent:#2A2160;
+  --display:"Bagel Fat One","Arial Rounded MT Bold","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito","Trebuchet MS",system-ui,-apple-system,sans-serif;
+  --r:18px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1C1740; --bg-dot1:#FF6B91; --bg-dot2:#3ED9B3; --bg-dot3:#7DB8FF;
+  --paper:#2B2459; --paper-2:#342C68;
+  --ink:#FFF3D6; --muted:#CFC7F2; --line:#FFF3D6; --shadow:#0C0926;
+  --berry:#FF6B91; --mango:#FFC94D; --mint:#3ED9B3; --sky:#7DB8FF; --lilac:#C6B2FF;
+  --berry-soft:#5A2848; --mint-soft:#1E4A4A; --sky-soft:#23386A; --mango-soft:#55431F;
+  --on-accent:#1C1740; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#1C1740; --bg-dot1:#FF6B91; --bg-dot2:#3ED9B3; --bg-dot3:#7DB8FF;
+  --paper:#2B2459; --paper-2:#342C68;
+  --ink:#FFF3D6; --muted:#CFC7F2; --line:#FFF3D6; --shadow:#0C0926;
+  --berry:#FF6B91; --mango:#FFC94D; --mint:#3ED9B3; --sky:#7DB8FF; --lilac:#C6B2FF;
+  --berry-soft:#5A2848; --mint-soft:#1E4A4A; --sky-soft:#23386A; --mango-soft:#55431F;
+  --on-accent:#1C1740; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  background-color:var(--bg); color:var(--ink); font-family:var(--body); font-size:17px; line-height:1.55;
+  background-image:
+    radial-gradient(circle at 20px 30px, var(--bg-dot1) 2.5px, transparent 3.5px),
+    radial-gradient(circle at 70px 80px, var(--bg-dot2) 2.5px, transparent 3.5px),
+    radial-gradient(circle at 110px 20px, var(--bg-dot3) 2.5px, transparent 3.5px);
+  background-size:140px 120px;
+}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:0 64px}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.1;text-wrap:balance;margin:0;letter-spacing:.5px}
+h1{font-size:clamp(2.2rem,6vw,3.6rem)}
+h2{font-size:clamp(1.6rem,4vw,2.3rem)}
+h3{font-size:1.3rem}
+p{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px dashed var(--berry);outline-offset:3px}
+
+/* Header + tabs */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:3px solid var(--line);margin-inline:-16px;padding:10px 16px}
+.topin{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--display);font-size:1.5rem;white-space:nowrap}
+.brand svg{width:36px;height:36px}
+nav.tabs{display:flex;gap:8px;overflow-x:auto;flex:1;min-width:0;padding:4px 2px 6px;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+.tab{border:3px solid var(--line);background:var(--paper);border-radius:999px;padding:6px 16px;font-weight:800;cursor:pointer;white-space:nowrap;box-shadow:0 3px 0 var(--shadow);transition:transform .12s}
+.tab:hover{transform:translateY(-2px)}
+.tab[aria-selected="true"]{background:var(--mango);color:var(--on-accent)}
+
+/* Generic pieces */
+.card{background:var(--paper);border:3px solid var(--line);border-radius:var(--r);box-shadow:5px 5px 0 var(--shadow);padding:20px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:3px solid var(--line);border-radius:14px;padding:9px 18px;font-weight:900;cursor:pointer;background:var(--paper);box-shadow:0 4px 0 var(--shadow);transition:transform .1s, box-shadow .1s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 0 var(--shadow)}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--shadow)}
+.btn.berry{background:var(--berry);color:var(--on-accent)}
+.btn.mint{background:var(--mint);color:var(--on-accent)}
+.btn.mango{background:var(--mango);color:var(--on-accent)}
+.btn.sky{background:var(--sky);color:var(--on-accent)}
+.btn.small{padding:5px 12px;font-size:.9rem;border-radius:11px}
+.btn svg{width:20px;height:20px}
+.chip{display:inline-block;border:2px solid var(--line);border-radius:999px;padding:1px 10px;font-size:.8rem;font-weight:800;background:var(--paper-2)}
+.chip.easy{background:var(--mint-soft)} .chip.medium{background:var(--mango-soft)} .chip.challenge{background:var(--berry-soft)}
+.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-weight:900;font-size:.78rem;color:var(--muted)}
+.muted{color:var(--muted)}
+.section{display:grid;gap:22px;padding-top:26px}
+.grid{display:grid;gap:20px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+label.f{display:grid;gap:4px;font-weight:800;font-size:.9rem}
+input[type=text],input[type=date],select,textarea{border:3px solid var(--line);border-radius:12px;background:var(--paper-2);padding:8px 10px;width:100%;min-width:0}
+textarea{min-height:70px;resize:vertical}
+.flag{display:block;width:42px;height:28px;border:2px solid var(--line);border-radius:5px;flex:none}
+
+/* Home */
+.hero{display:grid;grid-template-columns:1.4fr 1fr;gap:22px;align-items:stretch}
+.hero .card:first-child{background:var(--berry-soft);display:grid;gap:14px;align-content:center;position:relative;overflow:hidden}
+.hero h1 span{color:var(--berry)}
+.namebox{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.namebox input{max-width:220px}
+.tipcard{background:var(--sky-soft);display:grid;gap:10px;align-content:start}
+.tipcard .big{font-weight:800;font-size:1.1rem}
+.tokens{display:flex;gap:12px;flex-wrap:wrap}
+.token{width:66px;height:66px;border:3px dashed var(--line);border-radius:50%;display:grid;place-items:center;background:var(--paper-2)}
+.token.on{border-style:solid;background:var(--mango)}
+.token svg{width:40px;height:40px}
+.stats{display:flex;gap:28px;flex-wrap:wrap}
+.stat b{display:block;font-family:var(--display);font-size:2.2rem;line-height:1;font-variant-numeric:tabular-nums}
+.stat span{font-weight:800;color:var(--muted);font-size:.85rem}
+.bar{height:16px;border:3px solid var(--line);border-radius:999px;overflow:hidden;background:var(--paper-2)}
+.bar i{display:block;height:100%;background:var(--mint);transition:width .4s}
+
+/* Passport */
+.passport{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:14px}
+.stamp{aspect-ratio:1;max-width:100%;border:3px dashed var(--muted);border-radius:50%;display:grid;place-items:center;text-align:center;padding:10px;font-weight:900;font-size:.82rem;color:var(--muted);opacity:.6}
+.stamp .c{font-family:var(--display);font-size:1rem;line-height:1.05}
+.stamp.on{opacity:1;border-style:double;border-width:6px;color:var(--berry);border-color:var(--berry);transform:rotate(-8deg);background:var(--paper)}
+.stamp.on:nth-child(even){transform:rotate(7deg);color:var(--sky);border-color:var(--sky)}
+.stamp.on:nth-child(3n){color:var(--mint);border-color:var(--mint);transform:rotate(-3deg)}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.badge{border:3px solid var(--line);border-radius:16px;padding:12px;display:grid;gap:4px;background:var(--paper-2);opacity:.55}
+.badge.on{opacity:1;background:var(--mango-soft)}
+.badge b{font-family:var(--display);font-weight:400;font-size:1.05rem}
+.badge small{color:var(--muted);font-weight:700;line-height:1.3}
+
+/* Planner */
+.weeknav{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:space-between}
+.weeknav .ctrl{display:flex;gap:8px;flex-wrap:wrap}
+.sessions{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.session{display:grid;gap:12px;align-content:start}
+.session .num{font-family:var(--display);font-size:1.1rem;display:flex;justify-content:space-between;align-items:center}
+.session.done{background:var(--mint-soft)}
+.session.done .num::after{content:"Baked!";font-family:var(--body);font-weight:900;font-size:.8rem;border:2px solid var(--line);border-radius:999px;padding:1px 10px;background:var(--mint);color:var(--on-accent)}
+.shopbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.shopbtn{border:3px solid var(--line);border-radius:12px;padding:6px 14px;font-weight:900;cursor:pointer;background:var(--paper)}
+.shopbtn[aria-pressed="true"]{background:var(--sky);color:var(--on-accent)}
+.list{display:grid;gap:18px}
+.aisle h3{font-size:1.05rem;margin-bottom:6px}
+.item{display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:12px;border:2px solid transparent;cursor:pointer}
+.item:hover{border-color:var(--line);background:var(--paper-2)}
+.item input{position:absolute;opacity:0;pointer-events:none}
+.box{width:28px;height:28px;flex:none;border:3px solid var(--line);border-radius:8px;display:grid;place-items:center;background:var(--paper)}
+.box svg{width:18px;height:18px;opacity:0;transform:scale(.4);transition:.2s}
+.item.got .box{background:var(--mint)}
+.item.got .box svg{opacity:1;transform:scale(1)}
+.item.got .nm{text-decoration:line-through;text-decoration-thickness:3px;text-decoration-color:var(--berry);color:var(--muted)}
+.item .nm{flex:1;font-weight:700;min-width:0}
+.item .q{font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap}
+.item .for{display:block;font-size:.78rem;color:var(--muted);font-weight:600}
+.storetip{background:var(--mango-soft);border:2px dashed var(--line);border-radius:14px;padding:10px 14px;font-weight:600}
+
+/* Recipes */
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.rcard{display:grid;gap:10px;cursor:pointer;text-align:left;transition:transform .15s}
+.rcard:hover{transform:translateY(-4px) rotate(-.6deg)}
+.rcard .meta{display:flex;gap:6px;flex-wrap:wrap}
+.rcard .skill{font-weight:700;font-size:.92rem;color:var(--muted)}
+.art{height:120px;border-radius:12px;border:3px solid var(--line);display:grid;place-items:center;overflow:hidden}
+.art svg{height:110px;width:100%;max-width:200px}
+.rcard:hover .art svg{transform:scale(1.06) rotate(-2deg);transition:transform .25s}
+.rhead{display:flex;align-items:center;gap:10px}
+.pipcorner{background:var(--sky-soft);display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:start}
+.pipcorner .pipfig svg{width:96px;height:128px}
+.pipfig{cursor:pointer;background:none;border:0;padding:0;display:block}
+@keyframes bob{50%{transform:translateY(-6px) rotate(3deg)}}
+.bubble{position:relative;background:var(--paper);border:3px solid var(--line);border-radius:18px;padding:12px 14px;font-weight:800;font-size:1.05rem;line-height:1.4}
+.bubble::before{content:"";position:absolute;left:-13px;top:22px;border:10px solid transparent;border-right-color:var(--line)}
+.bubble::after{content:"";position:absolute;left:-8px;top:24px;border:8px solid transparent;border-right-color:var(--paper)}
+.pipfact{grid-column:1/-1;display:grid;gap:4px}
+.toast{display:flex;align-items:center;gap:10px}
+.toast svg{width:34px;height:46px;flex:none}
+.quiz{display:grid;gap:10px;background:var(--paper-2);border:3px solid var(--line);border-radius:16px;padding:14px}
+.quiz .q{font-weight:900}
+.quiz .opts{display:grid;gap:8px}
+.opt{text-align:left;border:3px solid var(--line);border-radius:12px;background:var(--paper);padding:8px 12px;font-weight:800;cursor:pointer;box-shadow:0 3px 0 var(--shadow)}
+.opt:hover{background:var(--mango-soft)}
+.opt.wrong{background:var(--berry-soft);animation:shake .4s}
+.opt.right{background:var(--mint);color:var(--on-accent)}
+@keyframes shake{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-3px)}}
+.quiz .fb{font-weight:800}
+
+/* Modal */
+.overlay{position:fixed;inset:0;background:rgba(20,15,50,.55);z-index:50;display:grid;place-items:start center;padding:calc(env(safe-area-inset-top,0px) + 24px) 16px 24px;overflow-y:auto}
+.modal{width:100%;max-width:760px;display:grid;gap:18px;background:var(--paper)}
+.modal .head{display:flex;justify-content:space-between;gap:12px;align-items:start}
+.cols{display:grid;grid-template-columns:1fr 1.5fr;gap:22px}
+.cols>*{min-width:0}
+ul.ing{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+ul.ing li{display:flex;justify-content:space-between;gap:10px;border-bottom:2px dotted var(--muted);padding-bottom:4px}
+ul.ing li b{font-variant-numeric:tabular-nums;white-space:nowrap}
+ol.steps{margin:0;padding:0;list-style:none;display:grid;gap:10px;counter-reset:s}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:36px 1fr;gap:10px;align-items:start}
+ol.steps li::before{content:counter(s);font-family:var(--display);width:34px;height:34px;border-radius:50%;border:3px solid var(--line);display:grid;place-items:center;background:var(--mango);color:var(--on-accent)}
+.grownup{display:inline-flex;align-items:center;gap:4px;font-size:.75rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em;background:var(--berry-soft);border:2px solid var(--berry);border-radius:999px;padding:0 8px;margin-left:4px;vertical-align:2px}
+.grownup svg{width:14px;height:14px}
+.note{background:var(--sky-soft);border-radius:14px;padding:12px 14px;font-weight:600}
+
+/* School */
+details.lesson{padding:0;overflow:hidden}
+details.lesson summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;align-items:center;gap:14px}
+details.lesson summary::-webkit-details-marker{display:none}
+.lesson .ico{width:52px;height:52px;flex:none;border-radius:14px;border:3px solid var(--line);display:grid;place-items:center}
+.lesson .ico svg{width:34px;height:34px}
+.lesson .ttl{flex:1;min-width:0}
+.lesson .ttl small{display:block;color:var(--muted);font-weight:700}
+.lesson .done-mark{font-weight:900;font-size:.8rem;border:2px solid var(--line);border-radius:999px;padding:1px 10px;background:var(--mint);color:var(--on-accent)}
+.lesson .body{padding:0 20px 20px;display:grid;gap:12px}
+.lesson .body ul{margin:0;padding-left:20px;display:grid;gap:4px}
+.tryit{background:var(--mango-soft);border:2px dashed var(--line);border-radius:14px;padding:10px 14px}
+.fact{background:var(--lilac);color:var(--on-accent);border:3px solid var(--line);border-radius:var(--r);padding:16px 20px;font-weight:800;box-shadow:5px 5px 0 var(--shadow)}
+
+/* Journal */
+.jform{display:grid;gap:14px;background:var(--mango-soft)}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.moods{display:flex;gap:10px;flex-wrap:wrap}
+.mood{border:3px solid var(--line);border-radius:16px;background:var(--paper);padding:6px 10px;display:grid;justify-items:center;gap:2px;cursor:pointer;font-weight:800;font-size:.8rem;min-width:84px}
+.mood svg{width:40px;height:40px}
+.mood[aria-pressed="true"]{background:var(--mango);color:var(--on-accent);transform:rotate(-3deg)}
+.starsin{display:flex;gap:4px}
+.starsin button{background:none;border:none;padding:2px;cursor:pointer}
+.starsin svg{width:34px;height:34px}
+.entries{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:22px}
+.entry{display:grid;gap:10px;align-content:start;position:relative}
+.entry:nth-child(3n+1){transform:rotate(-.7deg);background:var(--paper)}
+.entry:nth-child(3n+2){transform:rotate(.6deg);background:var(--sky-soft)}
+.entry:nth-child(3n){transform:rotate(-.3deg);background:var(--mint-soft)}
+.entry .tape{position:absolute;top:-12px;left:50%;width:90px;height:22px;transform:translateX(-50%) rotate(-3deg);background:var(--mango);opacity:.85;border:2px solid var(--line)}
+.entry .topline{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.entry .topline svg{width:46px;height:46px;flex:none}
+.entry dl{margin:0;display:grid;gap:6px}
+.entry dt{font-weight:900;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.entry dd{margin:0;font-weight:600}
+.showstars svg{width:20px;height:20px}
+.example-tag{font-weight:900;font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;background:var(--berry);color:var(--on-accent);border:2px solid var(--line);border-radius:999px;padding:0 8px}
+
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);transform:translateX(-50%);background:var(--ink);color:var(--bg);font-weight:800;padding:10px 20px;border-radius:999px;z-index:60;box-shadow:0 4px 0 var(--shadow);max-width:calc(100% - 32px);text-align:center}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:70;width:100%;height:100%}
+footer{padding-top:40px;color:var(--muted);font-weight:700;font-size:.85rem;display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between}
+
+@media (max-width:760px){
+  .pipcorner{grid-template-columns:72px 1fr}.pipcorner .pipfig svg{width:72px;height:96px}
+  .hero,.cols{grid-template-columns:1fr}
+  body{font-size:16px}
+  .brand span{display:none}
+}
+/* ---------- Motion (switched off by the "Wiggles" toggle, which adds html.calm) ---------- */
+@keyframes drift{to{background-position:280px 480px}}
+@keyframes rise{from{transform:translateY(28px) scale(.96)}}
+@keyframes pop{from{transform:scale(.2) rotate(-18deg)}}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-7deg)}75%{transform:rotate(7deg)}}
+@keyframes float{50%{transform:translateY(-6px) rotate(1.5deg)}}
+@keyframes blink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+@keyframes wave{0%,55%,100%{transform:rotate(0)}65%,85%{transform:rotate(-30deg)}75%{transform:rotate(6deg)}}
+@keyframes jump{30%{transform:translateY(-34px) rotate(-12deg)}60%{transform:translateY(0) rotate(8deg) scaleY(.88)}80%{transform:translateY(-6px)}}
+@keyframes stampin{from{transform:scale(2.8) rotate(-40deg);opacity:0}}
+@keyframes slap{from{transform:translateY(-50px) rotate(-10deg) scale(1.1)}}
+@keyframes toastin{from{transform:translate(-50%,60px) scale(.7)}}
+@keyframes stripes{to{background-position:28px 0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes beckon{0%,100%{transform:none}50%{transform:scale(1.06) rotate(-1.5deg)}}
+@keyframes glow{50%{opacity:.25}}
+@keyframes stir{0%,100%{transform:rotate(-22deg)}50%{transform:rotate(22deg)}}
+html:not(.calm) body{animation:drift 70s linear infinite}
+html:not(.calm) #view.enter .section>*{animation:rise .6s cubic-bezier(.2,1.4,.4,1) backwards;animation-delay:calc(var(--s,0)*80ms)}
+html:not(.calm) #view.enter :is(.grid,.sessions,.entries,.badges,.passport)>*{animation:rise .6s cubic-bezier(.2,1.4,.4,1) backwards;animation-delay:calc(var(--n,0)*70ms + 150ms)}
+h1 .ltr{display:inline-block}
+html:not(.calm) #view.enter h1 .ltr{animation:pop .7s cubic-bezier(.2,1.7,.4,1) backwards;animation-delay:calc(var(--i)*35ms + 120ms)}
+html:not(.calm) .pipfig{animation:float 3s ease-in-out infinite}
+html:not(.calm) .pip-eyes{animation:blink 4.5s infinite;transform-origin:60px 64px}
+html:not(.calm) .pip-arm{animation:wave 2.6s ease-in-out infinite;transform-origin:90px 86px}
+html:not(.calm) .pipfig.jump svg{animation:jump .75s cubic-bezier(.3,1.5,.5,1)}
+html:not(.calm) .bubble.say{animation:pop .45s cubic-bezier(.2,1.7,.4,1)}
+html:not(.calm) .toast.show{animation:toastin .5s cubic-bezier(.2,1.5,.4,1)}
+html:not(.calm) .token.on svg{animation:wiggle 2.4s ease-in-out infinite}
+html:not(.calm) .token.on:nth-child(2) svg{animation-delay:.3s}
+html:not(.calm) .token.on:nth-child(3) svg{animation-delay:.6s}
+html:not(.calm) .rcard .art svg{animation:float 4s ease-in-out infinite;animation-delay:calc(var(--n,0)*-.6s)}
+html:not(.calm) .rcard:hover{animation:wiggle .5s}
+html:not(.calm) .item.justgot .box{animation:pop .5s cubic-bezier(.2,1.9,.4,1)}
+html:not(.calm) .stamp.new{animation:stampin .8s cubic-bezier(.3,1.4,.5,1) .5s backwards}
+html:not(.calm) .entry.slap{animation:slap .7s cubic-bezier(.3,1.5,.5,1) backwards}
+html:not(.calm) .mood[aria-pressed="true"] svg{animation:pop .5s cubic-bezier(.2,1.8,.4,1)}
+html:not(.calm) .starsin button.lit svg{animation:pop .45s cubic-bezier(.2,1.8,.4,1) backwards;animation-delay:calc(var(--i)*70ms)}
+html:not(.calm) .badge.on svg{animation:spin 6s linear infinite}
+html:not(.calm) .btn.beckon{animation:beckon 1.8s ease-in-out infinite}
+.bar i{background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.35) 0 7px,transparent 7px 14px)}
+html:not(.calm) .bar i{animation:stripes 1s linear infinite}
+.motion-toggle{white-space:nowrap}
+/* Bake-along */
+.ba{position:fixed;inset:0;z-index:55;background:var(--bg);overflow-y:auto;padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 24px)}
+.ba-in{max-width:760px;margin:0 auto;display:grid;gap:20px}
+.ba-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.track{position:relative;height:22px;border:3px solid var(--line);border-radius:999px;background:var(--paper);margin:18px 22px 4px}
+.track i{position:absolute;left:0;top:0;bottom:0;background:var(--berry);border-radius:999px;transition:width .5s}
+.track svg{position:absolute;top:50%;width:46px;height:46px;transform:translate(-50%,-60%);transition:left .5s cubic-bezier(.3,1.4,.5,1)}
+.stepcard{display:grid;gap:16px;font-size:clamp(1.15rem,3.4vw,1.45rem);font-weight:800;line-height:1.45}
+.stepnum{font-family:var(--display);font-size:3rem;line-height:1;color:var(--berry)}
+html:not(.calm) .stepcard.enter{animation:rise .5s cubic-bezier(.2,1.4,.4,1)}
+.timer{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;background:var(--mango-soft)}
+.timer>*{min-width:0}
+.timer .t{font-family:var(--display);font-size:2.8rem;line-height:1;font-variant-numeric:tabular-nums}
+.timer .ctl{display:flex;gap:8px;flex-wrap:wrap}
+.machine svg{width:150px;height:130px;max-width:100%}
+html:not(.calm) .machine.on .glow{animation:glow 1.4s ease-in-out infinite}
+html:not(.calm) .machine.on .whisk{animation:stir .8s ease-in-out infinite}
+.machine .whisk{transform-origin:75px 30px}
+.machine .cake{transform-origin:75px 96px;transition:transform 1s linear}
+.ba-nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.finish{text-align:center;justify-items:center}
+.finish .pipfig svg{width:140px;height:186px}
+html:not(.calm) .finish .pipfig svg{animation:jump 1.1s cubic-bezier(.3,1.5,.5,1) infinite}
+@media (max-width:520px){.timer{grid-template-columns:1fr}.machine{justify-self:center}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-whisk" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M24 4c-9 7-9 20 0 26 9-6 9-19 0-26z"/><path d="M24 4c-4 7-4 20 0 26M24 4c4 7 4 20 0 26"/><path d="M24 30v14"/></g></symbol>
+  <symbol id="i-cupcake" viewBox="0 0 48 48"><path d="M10 24h28l-4 18H14z" fill="var(--sky)" stroke="var(--line)" stroke-width="3" stroke-linejoin="round"/><path d="M8 24c0-9 7-15 16-15s16 6 16 15z" fill="var(--berry)" stroke="var(--line)" stroke-width="3"/><circle cx="24" cy="6" r="4" fill="var(--berry)" stroke="var(--line)" stroke-width="2.5"/><g stroke="var(--paper)" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l2-2M24 15l2 2M31 19l2-2"/></g></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.6 1.3 6.5L12 17.2l-5.9 3.2 1.3-6.5L2.5 9.3l6.6-.8z" stroke="var(--line)" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-glove" viewBox="0 0 24 24"><path d="M6 21V11c0-2 1-3 2-3V5a2 2 0 014 0v3h1V6a2 2 0 014 0v6l2-2a2 2 0 013 3l-5 6v3z" fill="var(--berry)" stroke="var(--line)" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-tick" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6" fill="none" stroke="var(--on-accent)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-basket" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><path d="M3 10h18l-2 10H5z"/><path d="M8 10l4-6 4 6"/></g></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V5a1 1 0 011-1h11"/></g></symbol>
+</svg>
+
+<div class="wrap">
+  <header class="top">
+    <div class="topin">
+      <div class="brand"><svg aria-hidden="true"><use href="#i-cupcake"/></svg><span>Whisk &amp; Wonder</span></div>
+      <nav class="tabs" role="tablist" aria-label="Sections">
+        <button class="tab" role="tab" data-tab="home" id="tab-home">My Kitchen</button>
+        <button class="tab" role="tab" data-tab="planner" id="tab-planner">Bake Planner</button>
+        <button class="tab" role="tab" data-tab="recipes" id="tab-recipes">Recipes</button>
+        <button class="tab" role="tab" data-tab="school" id="tab-school">Baking School</button>
+        <button class="tab" role="tab" data-tab="journal" id="tab-journal">My Journal</button>
+      </nav>
+      <button class="btn small motion-toggle" id="motion-toggle" aria-pressed="true">Wiggles: on</button>
+    </div>
+  </header>
+  <main id="view"></main>
+  <footer>
+    <span>Whisk &amp; Wonder · a baking club for one brilliant baker and their grown-ups</span>
+    <span>No accounts, no tracking. Your plans and journal stay on this device only.</span>
+  </footer>
+</div>
+<div id="modal-root"></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<script>
+(function(){
+"use strict";
+/* ---------- Data ---------- */
+const FLAGS = {
+  "United Kingdom":["#012169","#FFFFFF","#C8102E"],
+  "Denmark":["#C8102E","#FFFFFF","#C8102E"],
+  "Italy":["#009246","#FFFFFF","#CE2B37"],
+  "France":["#0055A4","#FFFFFF","#EF4135"],
+  "Sweden":["#006AA7","#FECC00","#006AA7"],
+  "Germany":["#000000","#DD0000","#FFCE00"],
+  "Austria":["#ED2939","#FFFFFF","#ED2939"]
+};
+const COUNTRIES = Object.keys(FLAGS);
+const AISLE = {
+  "self-raising flour":"Baking aisle","plain flour":"Baking aisle","strong white bread flour":"Baking aisle","caster sugar":"Baking aisle","icing sugar":"Baking aisle","light brown sugar":"Baking aisle","baking powder":"Baking aisle","vanilla extract":"Baking aisle","sprinkles":"Baking aisle","cupcake cases":"Baking aisle","fast-action dried yeast":"Baking aisle","ground almonds":"Baking aisle","pearl sugar or demerara sugar":"Baking aisle","sultanas":"Baking aisle",
+  "unsalted butter":"Fridge: dairy & eggs","eggs":"Fridge: dairy & eggs","milk":"Fridge: dairy & eggs",
+  "lemons":"Fruit & veg","eating apples":"Fruit & veg",
+  "sunflower oil":"Cupboard & spices","ground cinnamon":"Cupboard & spices","ground cardamom":"Cupboard & spices","honey":"Cupboard & spices","raspberry jam":"Cupboard & spices","apricot jam":"Cupboard & spices"
+};
+const AISLE_ORDER = ["Fruit & veg","Fridge: dairy & eggs","Baking aisle","Cupboard & spices","Other bits"];
+const I = (name,qty,unit)=>({name,qty,unit:unit||""});
+const S = (t,g)=>({t,g:!!g});
+const RECIPES = [
+ {id:"fairy",name:"Rainbow Fairy Cakes",country:"United Kingdom",level:"easy",time:"35 min",makes:"12 cakes",skill:"Creaming",colour:"var(--berry-soft)",
+  intro:"Little sponge cakes that British children have baked for over a hundred years. Fluffy, bouncy and perfect for sprinkles.",
+  ing:[I("unsalted butter",100,"g"),I("caster sugar",100,"g"),I("eggs",2),I("self-raising flour",100,"g"),I("milk",1,"tbsp"),I("vanilla extract",1,"tsp"),I("icing sugar",150,"g"),I("sprinkles",1,"pot"),I("cupcake cases",12)],
+  steps:[S("Turn the oven on to 180°C (160°C fan).",1),S("Put 12 paper cases into a bun tin."),S("Beat the soft butter and sugar together until it looks pale and fluffy, like a cloud."),S("Crack the eggs into a cup first (so no shell sneaks in). Beat them in one at a time."),S("Gently fold in the flour, vanilla and milk."),S("Spoon the mixture into the cases until each is two-thirds full."),S("Bake for 15 to 18 minutes until golden and springy.",1),S("Cool completely. Mix the icing sugar with 1 to 2 tablespoons of water, spread on top and go wild with sprinkles.")],
+  tip:"If the cakes are still a bit wobbly in the middle, give them 2 more minutes."},
+ {id:"scones",name:"Fruity Scones",country:"United Kingdom",level:"easy",time:"35 min",makes:"8 scones",skill:"Rubbing in",colour:"var(--mango-soft)",
+  intro:"Scones are perfect with jam and cream. Do you say it to rhyme with 'gone' or 'stone'? People in Britain still argue about it!",
+  ing:[I("self-raising flour",225,"g"),I("baking powder",1,"tsp"),I("unsalted butter",50,"g"),I("caster sugar",25,"g"),I("sultanas",50,"g"),I("milk",125,"ml"),I("eggs",1)],
+  steps:[S("Turn the oven on to 220°C (200°C fan) and line a baking tray.",1),S("Put the flour and baking powder in a big bowl. Add the cold butter in small cubes."),S("Rub the butter in with your fingertips until it looks like breadcrumbs. Lift your hands high so air falls in!"),S("Stir in the sugar and sultanas."),S("Pour in the milk and mix with a butter knife into a soft dough. Don't squish it too much."),S("Pat it out 2 cm thick and cut circles with a cutter. Push straight down, no twisting."),S("Beat the egg and brush it on top so they go shiny."),S("Bake for 10 to 12 minutes until risen and golden.",1)],
+  tip:"Cold butter and gentle hands make the tallest scones."},
+ {id:"danish",name:"Danish Butter Swirls",country:"Denmark",level:"easy",time:"45 min",makes:"20 biscuits",skill:"Piping and shaping",colour:"var(--sky-soft)",
+  intro:"In Denmark, butter biscuits come in a famous blue tin. Make your own swirly ones and keep them in any tin you like.",
+  ing:[I("unsalted butter",125,"g"),I("icing sugar",60,"g"),I("vanilla extract",1,"tsp"),I("plain flour",175,"g"),I("milk",1,"tbsp")],
+  steps:[S("Turn the oven on to 180°C (160°C fan) and line two trays.",1),S("Beat the soft butter and icing sugar until smooth and creamy."),S("Mix in the vanilla, then the flour and milk, to make a soft dough."),S("Spoon into a piping bag with a star nozzle and pipe little rings. No piping bag? Roll small balls and press with a fork."),S("Chill the tray in the fridge for 15 minutes so they keep their shape."),S("Bake for 12 to 14 minutes until just golden at the edges.",1),S("Leave on the tray for 5 minutes, then move to a rack to cool.")],
+  tip:"Squeeze the piping bag from the top, like a toothpaste tube."},
+ {id:"ciambella",name:"Lemon Ciambella",country:"Italy",level:"easy",time:"55 min",makes:"10 slices",skill:"Whisking",colour:"var(--mango-soft)",
+  intro:"Ciambella (say 'cham-bell-a') is a ring-shaped cake Italian families eat for breakfast with milk. Yes, cake for breakfast!",
+  ing:[I("eggs",3),I("caster sugar",150,"g"),I("lemons",1),I("sunflower oil",100,"ml"),I("milk",100,"ml"),I("plain flour",250,"g"),I("baking powder",2,"tsp"),I("icing sugar",10,"g")],
+  steps:[S("Turn the oven on to 180°C (160°C fan). Grease a ring tin or a 20 cm round tin.",1),S("Whisk the eggs and sugar for 5 minutes until thick and pale. An electric whisk helps.",1),S("Finely grate the lemon zest (just the yellow part) into the bowl.",1),S("Whisk in the oil and milk."),S("Sift in the flour and baking powder and fold until smooth."),S("Pour into the tin and bake for 35 to 40 minutes.",1),S("Test with a skewer. If it comes out clean, it's done! Cool, then dust with icing sugar like snow.")],
+  tip:"Count to 300 while you whisk. It really does need that long."},
+ {id:"madeleines",name:"Little Madeleines",country:"France",level:"medium",time:"1 hr",makes:"16 cakes",skill:"Resting batter",colour:"var(--sky-soft)",
+  intro:"Shell-shaped sponge cakes from the north-east of France. The secret is a cold batter, which helps them grow a little hump.",
+  ing:[I("unsalted butter",110,"g"),I("eggs",2),I("caster sugar",100,"g"),I("honey",1,"tbsp"),I("lemons",1),I("plain flour",100,"g"),I("baking powder",1,"tsp")],
+  steps:[S("Melt 100 g of the butter in a pan or microwave. Let it cool a bit.",1),S("Whisk the eggs, sugar and honey until frothy."),S("Add lemon zest, then fold in the flour and baking powder."),S("Fold in the melted butter until shiny."),S("Cover and chill the batter for 30 minutes. This is the magic step!"),S("Turn the oven on to 200°C (180°C fan). Brush a madeleine tray (or a fairy cake tin) with the last 10 g of butter.",1),S("Fill each hollow three-quarters full."),S("Bake for 9 to 10 minutes until golden with a little bump on top.",1)],
+  tip:"Hot oven + cold batter = the famous bump."},
+ {id:"apfelkuchen",name:"Apple Fan Cake",country:"Germany",level:"medium",time:"1 hr 20",makes:"8 slices",skill:"Arranging fruit",colour:"var(--mint-soft)",
+  intro:"Apfelkuchen means apple cake. German families often share it in the afternoon with a drink. That's called Kaffee und Kuchen.",
+  ing:[I("unsalted butter",125,"g"),I("caster sugar",125,"g"),I("eggs",2),I("self-raising flour",175,"g"),I("milk",2,"tbsp"),I("eating apples",3),I("lemons",1),I("ground cinnamon",1,"tsp"),I("apricot jam",2,"tbsp")],
+  steps:[S("Turn the oven on to 180°C (160°C fan). Line a 20 cm springform tin.",1),S("Peel and core the apples and cut them into quarters. Squeeze lemon juice over them.",1),S("Cut lines into the round side of each quarter, not all the way through, so they fan open.",1),S("Cream the butter and sugar, beat in the eggs, then fold in the flour, cinnamon and milk."),S("Spread the batter in the tin and press the apple pieces on top, round side up."),S("Bake for 40 to 45 minutes until a skewer comes out clean.",1),S("Warm the jam and brush it over the top so it shines like a shop cake.",1)],
+  tip:"Make a pattern with the apples, like the petals of a flower."},
+ {id:"kanelbullar",name:"Swedish Cinnamon Buns",country:"Sweden",level:"challenge",time:"2 hr 30",makes:"12 buns",skill:"Kneading and proving",colour:"var(--berry-soft)",
+  intro:"Kanelbullar are so loved in Sweden that they have their own day, 4 October. These are a bigger project, so save them for a weekend.",
+  ing:[I("milk",200,"ml"),I("unsalted butter",150,"g"),I("strong white bread flour",400,"g"),I("fast-action dried yeast",7,"g"),I("caster sugar",50,"g"),I("ground cardamom",1,"tsp"),I("eggs",1),I("light brown sugar",75,"g"),I("ground cinnamon",2,"tsp"),I("pearl sugar or demerara sugar",2,"tbsp")],
+  steps:[S("Warm the milk with 75 g of the butter until the butter melts. It should feel warm, not hot.",1),S("In a big bowl mix the flour, yeast, caster sugar and cardamom. Pour in the milk and mix to a dough."),S("Knead for 10 minutes. Push, fold, turn. It gets smooth and stretchy."),S("Cover and leave somewhere warm for 1 hour until it doubles in size."),S("Mix the other 75 g soft butter with brown sugar and cinnamon. Roll the dough into a big rectangle and spread this on top."),S("Roll it up like a sleeping bag and cut into 12 slices.",1),S("Put them in cases, cover, and let them grow for 30 minutes more."),S("Brush with beaten egg, sprinkle with pearl sugar, and bake at 200°C (180°C fan) for 12 to 15 minutes.",1)],
+  tip:"Yeast is alive! Too hot and it stops working, so keep the milk just warm."},
+ {id:"linzer",name:"Linzer Jam Hearts",country:"Austria",level:"medium",time:"1 hr 15",makes:"12 biscuits",skill:"Rolling and cutting",colour:"var(--berry-soft)",
+  intro:"These come from the city of Linz in Austria, home to one of the oldest cake recipes ever written down. Little windows show off the jam.",
+  allergy:"Contains nuts (ground almonds).",
+  ing:[I("unsalted butter",115,"g"),I("icing sugar",80,"g"),I("eggs",1),I("plain flour",150,"g"),I("ground almonds",75,"g"),I("raspberry jam",6,"tbsp")],
+  steps:[S("Beat the butter with 60 g of the icing sugar until soft and creamy."),S("Separate the egg and beat in just the yolk. A grown-up can show you the shell-to-shell trick."),S("Mix in the flour and ground almonds to make a dough. Wrap and chill for 30 minutes."),S("Turn the oven on to 180°C (160°C fan).",1),S("Roll the dough to the thickness of a coin, between two sheets of baking paper."),S("Cut 24 shapes. Cut a small heart out of the middle of 12 of them."),S("Bake for 10 to 12 minutes until pale golden, then cool completely.",1),S("Dust the window biscuits with the rest of the icing sugar. Spread jam on the others and sandwich together.")],
+  tip:"If the dough gets sticky, pop it back in the fridge for 10 minutes."}
+];
+const R = Object.fromEntries(RECIPES.map(r=>[r.id,r]));
+const STORES = {
+  "Tesco":"Tesco's home baking aisle has flour, sugar, sprinkles and cases all together. Look for the cheaper own-brand bags for basics like flour and sugar.",
+  "Co-op":"Smaller Co-op shops may not stock everything, like bread flour or cardamom. Check this list before you go and ask a grown-up about a back-up shop.",
+  "Lidl":"Lidl has a good baking range at low prices. The middle aisle sometimes has baking tins, cutters and piping bags for a short time, so keep your eyes peeled!"
+};
+const HELPERS = ["Mum","Dad","Mum and Dad","Grandparent","Other grown-up"];
+const DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const MOODS = [
+  {id:"proud",label:"Proud",mouth:"M14 28c3 4 13 4 16 0",eyes:"dots",col:"var(--mango)"},
+  {id:"giggly",label:"Giggly",mouth:"M13 26c2 7 16 7 18 0z",eyes:"arcs",col:"var(--berry)"},
+  {id:"amazed",label:"Amazed",mouth:"M22 31a3.5 4.5 0 100-.1z",eyes:"big",col:"var(--sky)"},
+  {id:"messy",label:"Messy fun",mouth:"M14 29c3-3 5 2 8-1s5 2 8-1",eyes:"dots",col:"var(--mint)"},
+  {id:"tricky",label:"Tricky but did it",mouth:"M15 29h14",eyes:"dots",col:"var(--lilac)"}
+];
+const LESSONS = [
+ {id:"safety",quiz:{"q": "Who should take a hot tray out of the oven?", "opts": ["A grown-up, wearing oven gloves", "Whoever is closest", "Nobody, just leave it in"], "a": 0},title:"Kitchen superpowers",sub:"Stay safe, stay brilliant",col:"var(--berry-soft)",icon:"glove",
+  body:["Wash your hands with soap before you start. Bakers' hands are clean hands.","Tie long hair back and roll up your sleeves.","The oven, sharp knives, the hob and electric whisks are grown-up jobs, or grown-up-watching jobs. Look for the oven glove sign in recipes.","Always use oven gloves for hot trays. Hot things don't always look hot!","Tidy as you go. A clear table means fewer spills."],
+  tryit:"Before your next bake, do a 'superpower check' with your grown-up: hands, hair, apron, oven gloves ready."},
+ {id:"measure",quiz:{"q": "Which spoon is bigger?", "opts": ["A teaspoon (tsp)", "A tablespoon (tbsp)", "They are exactly the same"], "a": 1},title:"Measure like a scientist",sub:"Grams, millilitres and spoons",col:"var(--sky-soft)",icon:"whisk",
+  body:["Baking is kitchen science. Measuring carefully makes it work.","Digital scales: put the bowl on, press the zero button (sometimes called 'tare'), then add your ingredient.","For liquids use a jug. Crouch down so your eyes are level with the line.","A teaspoon (tsp) is small. A tablespoon (tbsp) is three times bigger! Level the top with the back of a knife."],
+  tryit:"Weigh one egg in its shell. Most medium eggs are around 55 to 60 g. Is yours?"},
+ {id:"cream",quiz:{"q": "How do you know creaming is finished?", "opts": ["It turns brown", "It is runny like water", "It looks pale and fluffy"], "a": 2},title:"Creaming",sub:"How to beat air into butter",col:"var(--mango-soft)",icon:"whisk",
+  body:["Creaming means beating soft butter and sugar together.","The sharp sugar crystals cut tiny holes in the butter, which fill up with air.","When it's pale, fluffy and much lighter in colour, you've done it. It takes about 3 to 5 minutes.","Those air bubbles help your cake rise in the oven."],
+  tryit:"Look at the colour of the butter before and after creaming. Can you see how much paler it gets?"},
+ {id:"rub",quiz:{"q": "Which part of your hands do you use for rubbing in?", "opts": ["Your fingertips", "Your palms", "Your elbows"], "a": 0},title:"Rubbing in",sub:"The scone and crumble skill",col:"var(--mint-soft)",icon:"whisk",
+  body:["Rub cold butter into flour using only your fingertips (they're the coolest part of your hands).","Lift your hands up high and let the mixture fall back into the bowl. It adds air!","Stop when it looks like fine breadcrumbs.","Warm hands melt butter, so work quickly and lightly."],
+  tryit:"Shake the bowl gently. Any big lumps of butter jump to the top, so you can find them and rub them in."},
+ {id:"fold",quiz:{"q": "Why do we fold gently?", "opts": ["To make it sticky", "To keep the air bubbles in", "To finish faster"], "a": 1},title:"Folding",sub:"Gentle as a cloud",col:"var(--berry-soft)",icon:"whisk",
+  body:["Folding mixes things together without popping the air bubbles you worked hard to make.","Use a big metal spoon or spatula. Cut down through the middle, then scoop round and turn the mixture over.","Turn the bowl a little each time. It's like drawing a figure of eight.","Stop as soon as you can't see any dry flour."],
+  tryit:"Count your folds. Most sponge mixtures only need about 15 to 20."},
+ {id:"rise",quiz:{"q": "What does baking powder make when it gets wet and warm?", "opts": ["Chocolate", "Tiny ice cubes", "Gas bubbles"], "a": 2},title:"Why cakes rise",sub:"Bubbles, gas and a little bit of magic",col:"var(--sky-soft)",icon:"cupcake",
+  body:["Cakes rise because of gas bubbles that get bigger in the heat of the oven.","Baking powder contains two powders that fizz together when they get wet and warm, making carbon dioxide gas.","Self-raising flour already has baking powder mixed in.","Yeast is a tiny living thing. It eats sugar and gives off gas, which makes bread and buns puffy."],
+  tryit:"Put half a teaspoon of baking powder in a glass and add a splash of warm water. Watch it fizz!"},
+ {id:"knead",quiz:{"q": "What does proving mean?", "opts": ["Leaving dough somewhere warm to grow", "Showing your dough to a friend", "Putting dough in the freezer"], "a": 0},title:"Kneading and proving",sub:"The bread and bun skill",col:"var(--mango-soft)",icon:"whisk",
+  body:["Kneading stretches the dough so it becomes smooth and bouncy.","Push the dough away with the heel of your hand, fold it back, turn it, repeat.","The windowpane test: stretch a small piece. If it goes thin enough to see light through without tearing, it's ready.","Proving means letting the dough rest somewhere warm until it doubles in size."],
+  tryit:"Poke your risen dough gently. If the dent fills back slowly, it's ready to bake."},
+ {id:"done",quiz:{"q": "A skewer comes out of your cake clean. What does that mean?", "opts": ["It needs another hour", "It is ready!", "It has gone wrong"], "a": 1},title:"Is it done yet?",sub:"Ovens and testing",col:"var(--mint-soft)",icon:"cupcake",
+  body:["Fan ovens blow hot air around, so they cook faster. That's why recipes say 20°C less for fan.","Try not to open the oven door in the first part of baking. Cold air can make cakes sink.","Sponges are done when golden and they spring back when gently pressed.","Push a skewer into the middle of a cake. If it comes out clean, it's ready."],
+  tryit:"Next time you bake, ask your grown-up to switch the oven light on so you can watch it rise without opening the door."}
+];
+const FACTS = [
+  "Fan ovens cook faster because they blow the hot air around. That's why recipes say 20°C less for fan.",
+  "Sweden has a whole day for cinnamon buns. It's on 4 October.",
+  "The Victoria sponge is named after Queen Victoria, who liked a slice of cake with her afternoon tea.",
+  "Crack eggs into a cup first. Then if a bit of shell falls in, it's easy to fish out.",
+  "Butter is easier to cream when it's soft. Take it out of the fridge an hour before you bake.",
+  "Bread rises because yeast eats sugar and lets out gas. Your dough is full of tiny burps!",
+  "Room-temperature eggs mix in better and make fluffier cakes.",
+  "Sifting flour isn't just for show. It breaks up lumps and adds a bit of air.",
+  "Madeleines get their famous little hump from cold batter meeting a very hot oven."
+];
+const BADGES = [
+  {id:"first",title:"First Bake",desc:"Write your first journal page",test:s=>s.journal.length>=1},
+  {id:"hat",title:"Hat-trick Week",desc:"Bake all 3 sessions in one week",test:s=>Object.values(s.weeks).some(w=>w.sessions.filter(x=>x.done).length>=3)},
+  {id:"explorer",title:"Explorer",desc:"Collect 3 passport stamps",test:s=>stamps(s).size>=3},
+  {id:"scholar",title:"Baking Scholar",desc:"Finish 5 Baking School lessons",test:s=>Object.keys(s.lessons).length>=5},
+  {id:"star",title:"Star Baker",desc:"Write 10 journal pages",test:s=>s.journal.length>=10},
+  {id:"grand",title:"Grand Tour",desc:"Collect all 7 passport stamps",test:s=>stamps(s).size>=COUNTRIES.length}
+];
+
+/* ---------- Dates ---------- */
+const pad=n=>String(n).padStart(2,"0");
+const dkey=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+function weekStart(d){const x=new Date(d.getFullYear(),d.getMonth(),d.getDate());x.setDate(x.getDate()-((x.getDay()+6)%7));return x;}
+function fromKey(k){const [y,m,d]=k.split("-").map(Number);return new Date(y,m-1,d);}
+const fmtLong=d=>d.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
+const fmtShort=d=>d.toLocaleDateString("en-GB",{day:"numeric",month:"long"});
+const thisWeek=dkey(weekStart(new Date()));
+let viewWeek=thisWeek;
+
+/* ---------- State ---------- */
+const LS="whisk-wonder-v1";
+function blank(){return {v:1,name:"",calm:false,lessons:{},weeks:{},journal:[]};}
+function normal(s){const b=blank();s=Object.assign(b,s||{});if(!s.weeks||typeof s.weeks!=="object")s.weeks={};if(!Array.isArray(s.journal))s.journal=[];if(!s.lessons)s.lessons={};return s;}
+let state=blank();
+try{const raw=localStorage.getItem(LS);if(raw)state=normal(JSON.parse(raw));}catch(e){}
+function week(k){
+  if(!state.weeks[k]){
+    const first=Object.keys(state.weeks).length===0;
+    state.weeks[k]={shop:"Tesco",ticks:{},sessions:[
+      {day:1,recipe:first?"fairy":"",helper:"Mum",done:false},
+      {day:3,recipe:first?"danish":"",helper:"Dad",done:false},
+      {day:5,recipe:first?"scones":"",helper:"Mum",done:false}]};
+  }
+  return state.weeks[k];
+}
+function save(){
+  try{localStorage.setItem(LS,JSON.stringify(state));}catch(e){}
+}
+function setSync(ok){document.getElementById("sync").textContent=ok?"Saved to your Claude account":"Saved on this device";}
+/* ---------- Helpers ---------- */
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const icon=(id,cls="")=>`<svg class="${cls}" aria-hidden="true"><use href="#i-${id}"/></svg>`;
+const FLAGSVG={
+ "United Kingdom":'<rect width="60" height="40" fill="#012169"/><path d="M0 0L60 40M60 0L0 40" stroke="#FFF" stroke-width="8"/><path d="M0 0L60 40M60 0L0 40" stroke="#C8102E" stroke-width="3"/><path d="M30 0V40M0 20H60" stroke="#FFF" stroke-width="12"/><path d="M30 0V40M0 20H60" stroke="#C8102E" stroke-width="7"/>',
+ "Denmark":'<rect width="60" height="40" fill="#C8102E"/><path d="M19 0V40M0 20H60" stroke="#FFF" stroke-width="6"/>',
+ "Sweden":'<rect width="60" height="40" fill="#006AA7"/><path d="M21 0V40M0 20H60" stroke="#FECC00" stroke-width="7"/>',
+ "Austria":'<rect width="60" height="40" fill="#ED2939"/><rect y="13.3" width="60" height="13.4" fill="#FFF"/>',
+ "Germany":'<rect width="60" height="13.4" fill="#000"/><rect y="13.3" width="60" height="13.4" fill="#DD0000"/><rect y="26.6" width="60" height="13.4" fill="#FFCE00"/>',
+ "Italy":'<rect width="20" height="40" fill="#009246"/><rect x="20" width="20" height="40" fill="#FFF"/><rect x="40" width="20" height="40" fill="#CE2B37"/>',
+ "France":'<rect width="20" height="40" fill="#0055A4"/><rect x="20" width="20" height="40" fill="#FFF"/><rect x="40" width="20" height="40" fill="#EF4135"/>'
+};
+const flag=c=>`<svg class="flag" viewBox="0 0 60 40" preserveAspectRatio="none" role="img" aria-label="Flag of ${esc(c)}">${FLAGSVG[c]||""}</svg>`;
+const L='stroke="var(--line)" stroke-width="3" stroke-linejoin="round"';
+const sprink=(pts)=>pts.map(([x,y,a,c])=>`<rect x="${x-4}" y="${y-1.5}" width="8" height="3" rx="1.5" fill="${c}" transform="rotate(${a} ${x} ${y})"/>`).join("");
+const sugar=(pts)=>pts.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.8" fill="#FFFFFF"/>`).join("");
+const ART={
+ fairy:`<path d="M52 58h56l-7 32H59z" fill="#4D9DFF" ${L}/><path d="M66 60l2 28M80 60v28M94 60l-2 28" stroke="var(--line)" stroke-width="2"/><path d="M46 60c-6-18 12-30 34-30s40 12 34 30z" fill="#FFB3C7" ${L}/>${sprink([[60,48,-30,"#21C6A0"],[72,40,20,"#FFB627"],[88,42,-50,"#4D9DFF"],[98,50,35,"#B69CFF"],[70,54,60,"#E8304F"],[86,54,-10,"#21C6A0"],[80,46,80,"#FFFFFF"]])}<circle cx="80" cy="25" r="7" fill="#E8304F" ${L}/><path d="M80 18q3-8 10-9" fill="none" stroke="var(--line)" stroke-width="2.5" stroke-linecap="round"/>`,
+ scones:`<rect x="40" y="50" width="80" height="36" rx="14" fill="#E9B872" ${L}/><ellipse cx="80" cy="52" rx="40" ry="12" fill="#D98A3D" ${L}/><ellipse cx="80" cy="47" rx="30" ry="8" fill="#E8304F" ${L}/><path d="M60 43c-2-14 42-14 40 0c-6 6-34 6-40 0z" fill="#FFF8E7" ${L}/><path d="M78 32q4-6 8-2" fill="none" stroke="var(--line)" stroke-width="2.5" stroke-linecap="round"/><circle cx="55" cy="72" r="3" fill="#6B3A2A"/><circle cx="74" cy="78" r="3" fill="#6B3A2A"/><circle cx="98" cy="70" r="3" fill="#6B3A2A"/><circle cx="110" cy="78" r="2.5" fill="#6B3A2A"/>`,
+ danish:[[46,58],[84,42],[118,64]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="20" fill="none" stroke="#E9B872" stroke-width="13"/><circle cx="${x}" cy="${y}" r="20" fill="none" stroke="#D98A3D" stroke-width="2.5" stroke-dasharray="5 5"/><circle cx="${x}" cy="${y}" r="26.5" fill="none" stroke="var(--line)" stroke-width="3"/><circle cx="${x}" cy="${y}" r="13.5" fill="none" stroke="var(--line)" stroke-width="3"/>`).join("")+sugar([[40,40],[62,52],[78,24],[100,40],[112,48],[130,78],[34,70],[90,58]]),
+ ciambella:`<circle cx="70" cy="50" r="40" fill="#F6C26B" ${L}/>${Array.from({length:12},(_,i)=>{const a=i*Math.PI/6;return `<path d="M${70+14*Math.cos(a)} ${50+14*Math.sin(a)}L${70+39*Math.cos(a)} ${50+39*Math.sin(a)}" stroke="#D98A3D" stroke-width="2.5"/>`;}).join("")}<circle cx="70" cy="50" r="12" fill="var(--paper)" ${L}/>${sugar([[52,30],[84,28],[96,50],[86,74],[56,74],[44,52],[64,36],[78,64],[92,38],[50,62]])}<ellipse cx="132" cy="76" rx="17" ry="12" fill="#FFE14D" ${L}/><path d="M146 72l6-4" stroke="var(--line)" stroke-width="3" stroke-linecap="round"/><path d="M128 66q4-6 10-6" fill="none" stroke="#21C6A0" stroke-width="4" stroke-linecap="round"/>`,
+ madeleines:[[56,82,-12],[108,78,14]].map(([x,y,a])=>`<g transform="translate(${x} ${y}) rotate(${a})"><path d="M0 0C-26 0-34-26-20-40C-10-50 10-50 20-40C34-26 26 0 0 0z" fill="#F6C26B" ${L}/>${[-20,-12,-4,4,12,20].map(dx=>`<path d="M0 -4L${dx} -40" stroke="#D98A3D" stroke-width="2.5" stroke-linecap="round"/>`).join("")}</g>`).join("")+`<circle cx="138" cy="30" r="9" fill="#FFE14D" ${L}/>`,
+ apfelkuchen:`<circle cx="80" cy="50" r="42" fill="#F6C26B" ${L}/>${Array.from({length:8},(_,i)=>{const a=i*45;return `<g transform="rotate(${a} 80 50) translate(80 24)"><ellipse rx="13" ry="7" fill="#F7E7A6" stroke="#E34A4A" stroke-width="3"/><path d="M-6 -5v9M0 -6v11M6 -5v9" stroke="#D98A3D" stroke-width="1.5"/></g>`;}).join("")}<circle cx="80" cy="50" r="10" fill="#F7E7A6" stroke="#E34A4A" stroke-width="3"/>`,
+ kanelbullar:`<circle cx="80" cy="52" r="38" fill="#E9B872" ${L}/><path d="M80 52a4 4 0 0 1 8 0a8 8 0 0 1-16 0a12 12 0 0 1 24 0a16 16 0 0 1-32 0a20 20 0 0 1 40 0a24 24 0 0 1-48 0a28 28 0 0 1 56 0" fill="none" stroke="#9A4B24" stroke-width="5" stroke-linecap="round"/>${sugar([[66,30],[94,34],[104,56],[86,78],[60,72],[54,48],[76,42],[98,68],[70,60],[90,50]]).replace(/r="1.8"/g,'r="2.6"')}`,
+ linzer:`<circle cx="104" cy="58" r="34" fill="#E9B872" ${L}/><circle cx="68" cy="50" r="36" fill="#F3D9A4" ${L}/><path d="M68 66C48 52 54 34 68 44C82 34 88 52 68 66z" fill="#E8304F" ${L}/><path d="M60 46q2-3 5-1" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>${sugar([[44,40],[52,26],[70,20],[88,30],[94,48],[88,70],[70,80],[48,70],[40,56],[80,24],[58,78]])}`
+};
+const artSvg=id=>`<svg viewBox="0 0 160 100" aria-hidden="true">${ART[id]||""}</svg>`;
+function pip(face){
+  const mouth=face==="wow"?'<ellipse cx="60" cy="80" rx="6" ry="7" fill="var(--line)"/>':'<path d="M47 76q13 14 26 0" fill="var(--line)" stroke="var(--line)" stroke-width="3" stroke-linejoin="round"/><path d="M53 80q7 5 14 0" fill="#E8304F"/>';
+  return `<svg viewBox="0 0 120 160" aria-hidden="true"><rect x="53" y="92" width="14" height="64" rx="7" fill="#C98B4F" ${L}/><path d="M53 120h14M53 134h14" stroke="#A86C36" stroke-width="2"/><g class="pip-arm"><path d="M88 88q16-6 19-26" fill="none" stroke="var(--line)" stroke-width="4" stroke-linecap="round"/><circle cx="107" cy="60" r="7" fill="#E8B47A" stroke="var(--line)" stroke-width="3"/></g><ellipse cx="60" cy="66" rx="36" ry="40" fill="#E8B47A" stroke="var(--line)" stroke-width="4"/><path d="M36 70q4 12 12 20M84 58q2 10-2 20" fill="none" stroke="#C98B4F" stroke-width="2.5" stroke-linecap="round"/><path d="M30 38c-14-6-10-28 8-24c3-16 41-16 44 0c18-4 22 18 8 24z" fill="#FFFFFF" ${L}/><rect x="30" y="34" width="60" height="12" rx="4" fill="#FFFFFF" ${L}/><g class="pip-eyes"><circle cx="47" cy="64" r="5" fill="var(--line)"/><circle cx="73" cy="64" r="5" fill="var(--line)"/><circle cx="49" cy="62" r="1.8" fill="#FFFFFF"/><circle cx="75" cy="62" r="1.8" fill="#FFFFFF"/></g><circle cx="38" cy="76" r="5" fill="#FF8FA8" opacity=".8"/><circle cx="82" cy="76" r="5" fill="#FF8FA8" opacity=".8"/>${mouth}</svg>`;
+}
+function stamps(s){const set=new Set();s.journal.forEach(j=>{const r=R[j.recipe];if(r)set.add(r.country);});Object.values(s.weeks).forEach(w=>w.sessions.forEach(x=>{if(x.done&&R[x.recipe])set.add(R[x.recipe].country);}));return set;}
+function moodFace(m,size){
+  const mo=MOODS.find(x=>x.id===m)||MOODS[0];
+  const eyes=mo.eyes==="arcs"?`<path d="M13 19q2.5-3 5 0M26 19q2.5-3 5 0" fill="none" stroke="var(--line)" stroke-width="2.5" stroke-linecap="round"/>`:mo.eyes==="big"?`<circle cx="16" cy="18" r="3.2" fill="var(--line)"/><circle cx="28" cy="18" r="3.2" fill="var(--line)"/>`:`<circle cx="16" cy="18" r="2.2" fill="var(--line)"/><circle cx="28" cy="18" r="2.2" fill="var(--line)"/>`;
+  const fillMouth=mo.id==="giggly"||mo.id==="amazed";
+  return `<svg viewBox="0 0 44 44" aria-hidden="true"${size?` width="${size}" height="${size}"`:""}><circle cx="22" cy="22" r="19" fill="${mo.col}" stroke="var(--line)" stroke-width="3"/>${eyes}<path d="${mo.mouth}" fill="${fillMouth?"var(--line)":"none"}" stroke="var(--line)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+const starRow=(n,max=5)=>Array.from({length:max},(_,i)=>`<svg aria-hidden="true" style="fill:${i<n?"var(--mango)":"var(--paper-2)"}"><use href="#i-star"/></svg>`).join("");
+function fmtQty(q,u){const n=Math.round(q*10)/10;return u?`${n} ${u}`:`${n}`;}
+let toastT;
+function toast(msg){let t=document.querySelector(".toast");if(!t){t=document.createElement("div");t.className="toast";t.setAttribute("role","status");document.body.appendChild(t);}t.innerHTML=pip("wow")+`<span>${esc(msg)}</span>`;t.hidden=false;t.classList.remove("show");void t.offsetWidth;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>{t.hidden=true;},2600);}
+
+/* ---------- Confetti ---------- */
+function confetti(ox,oy,n){
+  if(state.calm)return;
+  const c=document.getElementById("confetti"),x=c.getContext("2d");
+  if(!confetti.parts){confetti.parts=[];}
+  c.width=innerWidth;c.height=innerHeight;
+  const cs=getComputedStyle(document.documentElement);
+  const cols=["--berry","--mango","--mint","--sky","--lilac"].map(v=>cs.getPropertyValue(v).trim());
+  const small=n&&n<60, X=ox??c.width/2, Y=oy??c.height*.45;
+  for(let i=0;i<(n||150);i++)confetti.parts.push({x:X+(Math.random()-.5)*(small?20:120),y:Y,vx:(Math.random()-.5)*(small?9:15),vy:-Math.random()*(small?8:15)-3,r:Math.random()*6+4,a:Math.random()*6,va:(Math.random()-.5)*.4,c:cols[Math.floor(Math.random()*cols.length)],round:Math.random()<.4,life:small?55:150});
+  if(confetti.running)return;confetti.running=true;
+  (function f(){x.clearRect(0,0,c.width,c.height);confetti.parts=confetti.parts.filter(p=>p.life-->0&&p.y<c.height+30);confetti.parts.forEach(p=>{p.vy+=.35;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.a+=p.va;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;if(p.round){x.beginPath();x.arc(0,0,p.r/2,0,7);x.fill();}else x.fillRect(-p.r/2,-p.r/5,p.r,p.r/2.5);x.restore();});if(confetti.parts.length)requestAnimationFrame(f);else{confetti.running=false;x.clearRect(0,0,c.width,c.height);}})();
+}
+function burstAt(el,n){if(!el)return;const r=el.getBoundingClientRect();confetti(r.left+r.width/2,r.top+r.height/2,n||26);}
+function applyMotion(){document.documentElement.classList.toggle("calm",!!state.calm);const b=document.getElementById("motion-toggle");if(b){b.textContent="Wiggles: "+(state.calm?"off":"on");b.setAttribute("aria-pressed",String(!state.calm));}}
+const PIP_TALK=[
+ "Why did the cookie go to the doctor? Because it felt crummy!",
+ "Did you know? A fan oven blows hot air around, so it cooks faster.",
+ "What's a cake's favourite game? Hide and go sweet!",
+ "Tip from me: crack eggs into a cup first. Shell-fishing is no fun!",
+ "Why was the baker so calm? She was on a roll!",
+ "Wooden spoons don't melt in hot mixtures. That's why I'm the best!",
+ "What did the dough say to the baker? It's been a pleasure to be kneaded!",
+ "Remember: oven, knives and hot pans are grown-up jobs.",
+ "Why did the bread go to the party? It wanted to get toasty!",
+ "Every great baker started with a messy kitchen. Mess is welcome here!"
+];
+let pipIdx=0;
+const lettersOf=(str,start)=>[...str].map((ch,i)=>ch===" "?" ":`<span class="ltr" style="--i:${start+i}">${esc(ch)}</span>`).join("");
+function countUp(){if(state.calm)return;document.querySelectorAll("[data-count]").forEach(el=>{const end=+el.dataset.count,suf=el.dataset.suffix||"";const t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/900);el.textContent=Math.round(end*(1-Math.pow(1-k,3)))+suf;if(k<1)requestAnimationFrame(f);})(t0);});}
+
+/* ---------- Bake-along ---------- */
+let BA=null,audioCtx=null,wakeLock=null;
+function stepMinutes(t){let m=t.match(/(\d+)\s*(?:to\s*\d+\s*)?minutes?/i);if(m)return +m[1];m=t.match(/(\d+)\s*hours?/i);return m?(+m[1])*60:0;}
+function machineSvg(kind,prog){
+  if(kind==="oven")return `<svg viewBox="0 0 150 130" aria-hidden="true"><rect x="6" y="6" width="138" height="118" rx="14" fill="var(--paper)" stroke="var(--line)" stroke-width="4"/><circle cx="30" cy="22" r="6" fill="var(--berry)" stroke="var(--line)" stroke-width="2.5"/><circle cx="52" cy="22" r="6" fill="var(--mango)" stroke="var(--line)" stroke-width="2.5"/><rect x="88" y="16" width="44" height="12" rx="6" fill="var(--paper-2)" stroke="var(--line)" stroke-width="2.5"/><rect x="20" y="38" width="110" height="74" rx="10" fill="#2A1A3A" stroke="var(--line)" stroke-width="3"/><rect class="glow" x="24" y="42" width="102" height="66" rx="8" fill="#FF9F1C" opacity=".55"/><g class="cake" style="transform:scaleY(${(0.35+0.65*prog).toFixed(3)})"><path d="M50 96c0-22 50-22 50 0z" fill="#F6C26B" stroke="var(--line)" stroke-width="3"/></g><rect x="44" y="94" width="62" height="10" rx="3" fill="#9AA0B8" stroke="var(--line)" stroke-width="3"/></svg>`;
+  return `<svg viewBox="0 0 150 130" aria-hidden="true"><g class="whisk"><path d="M75 6v50" stroke="var(--line)" stroke-width="5" stroke-linecap="round"/><path d="M75 56c-14 6-14 30 0 36 14-6 14-30 0-36z" fill="none" stroke="var(--line)" stroke-width="3.5"/></g><path d="M18 70h114c0 34-26 52-57 52S18 104 18 70z" fill="var(--sky)" stroke="var(--line)" stroke-width="4" stroke-linejoin="round"/><ellipse cx="75" cy="70" rx="57" ry="9" fill="#FFF0C2" stroke="var(--line)" stroke-width="3"/></svg>`;
+}
+function openBakeAlong(id){
+  const r=R[id];if(!r)return;stopTimer();
+  BA={id,step:0,done:false,timer:null};
+  document.getElementById("modal-root").innerHTML="";
+  let el=document.getElementById("ba-root");if(!el){el=document.createElement("div");el.id="ba-root";document.body.appendChild(el);}
+  try{navigator.wakeLock&&navigator.wakeLock.request("screen").then(w=>{wakeLock=w;}).catch(()=>{});}catch(e){}
+  renderBA();
+}
+function closeBA(){stopTimer();BA=null;const el=document.getElementById("ba-root");if(el)el.innerHTML="";try{wakeLock&&wakeLock.release();}catch(e){}wakeLock=null;}
+function stopTimer(){if(BA&&BA.timer&&BA.timer.iv){clearInterval(BA.timer.iv);BA.timer.iv=null;BA.timer.running=false;}}
+function fmtTime(sec){return `${Math.floor(sec/60)}:${pad(sec%60)}`;}
+function renderBA(){
+  const el=document.getElementById("ba-root");if(!el||!BA)return;
+  const r=R[BA.id],n=r.steps.length;
+  if(BA.done){
+    const nm=state.name.trim();
+    el.innerHTML=`<div class="ba"><div class="ba-in"><div class="ba-top"><div class="eyebrow">${esc(r.name)}</div><button class="btn small" data-baclose="1">Close</button></div>
+    <div class="card finish" style="display:grid;gap:16px"><div class="pipfig">${pip()}</div><h1>You did it${nm?", "+esc(nm):""}!</h1><p style="font-weight:700;font-size:1.15rem;max-width:40ch">Your ${esc(r.name)} are made. Share them with your grown-up and give yourself a big baker's bow.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><button class="btn berry beckon" data-bajournal="1">Write in my journal</button><button class="btn" data-baclose="1">Back to recipes</button></div></div></div></div>`;
+    confetti();return;
+  }
+  const s=r.steps[BA.step],mins=stepMinutes(s.t),kind=/bake/i.test(s.t)?"oven":"bowl";
+  if(mins&&(!BA.timer||BA.timer.step!==BA.step)){stopTimer();BA.timer={step:BA.step,total:mins*60,left:mins*60,running:false,iv:null};}
+  if(!mins){stopTimer();BA.timer=null;}
+  const pct=(BA.step+1)/n*100,T=BA.timer;
+  el.innerHTML=`<div class="ba"><div class="ba-in">
+    <div class="ba-top"><div><div class="eyebrow">Bake-along</div><h2>${esc(r.name)}</h2></div><button class="btn small" data-baclose="1">Close</button></div>
+    <div class="track" aria-hidden="true"><i style="width:${pct}%"></i><svg style="left:${pct}%"><use href="#i-cupcake"/></svg></div>
+    <div class="card stepcard enter"><div class="eyebrow">Step ${BA.step+1} of ${n}</div><div class="stepnum">${BA.step+1}</div><p>${esc(s.t)}</p>${s.g?`<span class="grownup" style="justify-self:start;font-size:.9rem">${icon("glove")} grown-up job</span>`:""}</div>
+    ${T?`<div class="card timer"><div class="machine ${T.running?"on":""}" id="ba-machine">${machineSvg(kind,1-T.left/T.total)}</div><div style="display:grid;gap:10px"><div class="eyebrow">${kind==="oven"?"Oven timer":"Timer"} · ${mins} min</div><div class="t" id="ba-time" aria-live="off">${fmtTime(T.left)}</div><div class="ctl"><button class="btn mint small" data-batimer="go">${T.running?"Pause":(T.left<T.total?"Keep going":"Start timer")}</button><button class="btn small" data-batimer="reset">Reset</button></div><div id="ba-ding" class="muted" style="font-weight:800" role="status"></div></div></div>`:""}
+    <div class="ba-nav"><button class="btn" data-bastep="-1" ${BA.step===0?"disabled":""}>← Back</button><button class="btn mango beckon" data-bastep="1">${BA.step===n-1?"I finished!":"Done! Next step →"}</button></div>
+    <div class="note"><b>Pip says:</b> ${esc(r.tip)}</div>
+  </div></div>`;
+}
+function chime(){try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();[0,.25,.5].forEach((d,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type="triangle";o.frequency.value=[784,988,1319][i];g.gain.setValueAtTime(.0001,audioCtx.currentTime+d);g.gain.exponentialRampToValueAtTime(.3,audioCtx.currentTime+d+.02);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+d+.4);o.connect(g).connect(audioCtx.destination);o.start(audioCtx.currentTime+d);o.stop(audioCtx.currentTime+d+.45);});}catch(e){}}
+function timerTick(){
+  const T=BA&&BA.timer;if(!T)return;T.left=Math.max(0,T.left-1);
+  const tm=document.getElementById("ba-time");if(tm)tm.textContent=fmtTime(T.left);
+  const cake=document.querySelector("#ba-machine .cake");if(cake)cake.style.transform=`scaleY(${(0.35+0.65*(1-T.left/T.total)).toFixed(3)})`;
+  if(T.left===0){stopTimer();chime();const m=document.getElementById("ba-machine");if(m)m.classList.remove("on");const d=document.getElementById("ba-ding");if(d)d.textContent="Ding! Time's up. Ask your grown-up to check it.";const b=document.querySelector('[data-batimer="go"]');if(b)b.textContent="Done";confetti(undefined,undefined,60);}
+}
+
+/* ---------- Views ---------- */
+let quizWrong={},newStamp=null,newEntry=null,lastTick=null,enterT=null;
+let tab="home",recipeFilter="all",jDraft=null,confirmDel=null;
+const view=document.getElementById("view");
+
+function pipLine(w,next,done){
+  const nm=state.name.trim();
+  if(!nm)return "Hi! I'm Pip, your baking buddy. Type your baker name so I know what to call you!";
+  if(done===3)return `Three bakes this week, ${nm}! I'm so proud I could do a cartwheel.`;
+  if(next)return `${nm}, it's ${R[next.recipe].name} on ${DAYS[next.day]} with ${next.helper}! I've already got my apron on.`;
+  return `Hi ${nm}! Let's pick something yummy to bake this week.`;
+}
+function homeView(){
+  const w=week(thisWeek);
+  const done=w.sessions.filter(s=>s.done).length;
+  const next=w.sessions.map((s,i)=>({...s,i})).filter(s=>!s.done&&R[s.recipe]).sort((a,b)=>a.day-b.day)[0];
+  const items=shoppingItems(w);const got=items.filter(i=>w.ticks[i.key]).length;
+  const st=stamps(state);
+  const dayNum=Math.floor((Date.now()-new Date(new Date().getFullYear(),0,0))/864e5);
+  const fact=FACTS[dayNum%FACTS.length];
+  const stars=state.journal.reduce((a,j)=>a+(j.stars||0),0)+Object.keys(state.lessons).length*2;
+  const nm=state.name.trim();
+  return `<div class="section">
+  <div class="hero">
+    <div class="card">
+      <div class="eyebrow">${esc(fmtLong(new Date()))}</div>
+      <h1>${lettersOf("Hello,",0)} <span id="hello-name">${lettersOf(nm||"Super Baker",7)}</span>${lettersOf("!",30)}<br>${lettersOf("What shall we bake?",32)}</h1>
+      <p style="font-weight:600;max-width:46ch">Every bake is a little adventure. Plan three bakes this week with your grown-ups, tick off your shopping, and fill your journal with tasty memories.</p>
+      <div class="namebox"><label for="baker-name" class="eyebrow">My baker name</label><input type="text" id="baker-name" maxlength="24" placeholder="Type your name" value="${esc(state.name)}"></div>
+    </div>
+    <div class="card pipcorner">
+      <button class="pipfig" data-pip="1" aria-label="Tap Pip for a joke or a fact">${pip()}</button>
+      <div class="bubble" id="pip-line" aria-live="polite">${esc(pipLine(w,next,done))}</div>
+      <div class="pipfact"><div class="eyebrow">Pip's fact of the day</div><p style="font-weight:700">${esc(fact)}</p>
+      <button class="btn sky small" data-go="school" style="justify-self:start">Go to Baking School</button></div>
+    </div>
+  </div>
+
+  <div class="grid g2">
+    <div class="card" style="display:grid;gap:14px">
+      <h2>This week's bakes</h2>
+      <div class="tokens">${w.sessions.map(s=>`<div class="token ${s.done?"on":""}" title="${s.done?"Baked":"Not baked yet"}">${icon(s.done?"cupcake":"whisk")}</div>`).join("")}</div>
+      <p style="font-weight:800">${done===3?"All three done! You are a baking legend this week.":`${done} of 3 baked. ${next?`Next up: <b>${esc(R[next.recipe].name)}</b> on ${DAYS[next.day]} with ${esc(next.helper)}.`:"Pick some recipes in your planner."}`}</p>
+      <div class="stats">
+        <div class="stat"><b data-count="${stars}">${stars}</b><span>stars collected</span></div>
+        <div class="stat"><b data-count="${state.journal.length}">${state.journal.length}</b><span>journal pages</span></div>
+        <div class="stat"><b data-count="${st.size}" data-suffix="/${COUNTRIES.length}">${st.size}/${COUNTRIES.length}</b><span>passport stamps</span></div>
+      </div>
+      <button class="btn mango" data-go="planner" style="justify-self:start">Open my planner</button>
+    </div>
+    <div class="card" style="display:grid;gap:12px;align-content:start">
+      <h2>Shopping trip</h2>
+      <p class="muted" style="font-weight:700">${items.length?`${got} of ${items.length} things ticked off for ${esc(w.shop)}.`:"Choose recipes in the planner and your list appears here."}</p>
+      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${items.length}" aria-valuenow="${got}"><i style="width:${items.length?got/items.length*100:0}%"></i></div>
+      <button class="btn mint" data-go="planner" data-anchor="shop" style="justify-self:start">${icon("basket")} See my list</button>
+    </div>
+  </div>
+
+  <div class="card" style="display:grid;gap:16px">
+    <div><h2>My Baking Passport</h2><p class="muted" style="font-weight:700">Tap Pip for jokes! Bake a recipe from a country to win its stamp. Can you bake your way around Europe?</p></div>
+    <div class="passport">${COUNTRIES.map(c=>`<div class="stamp ${st.has(c)?"on":""} ${c===newStamp?"new":""}"><div><div class="c">${esc(c)}</div>${st.has(c)?"Stamped!":"Not yet"}</div></div>`).join("")}</div>
+  </div>
+
+  <div class="card" style="display:grid;gap:16px">
+    <h2>My badges</h2>
+    <div class="badges">${BADGES.map(b=>{const on=b.test(state);return `<div class="badge ${on?"on":""}">${on?`<svg width="26" height="26" style="fill:var(--mango)" aria-hidden="true"><use href="#i-star"/></svg>`:""}<b>${esc(b.title)}</b><small>${esc(b.desc)}</small></div>`;}).join("")}</div>
+  </div>
+  </div>`;
+}
+
+function shoppingItems(w){
+  const map=new Map();
+  w.sessions.forEach(s=>{const r=R[s.recipe];if(!r)return;r.ing.forEach(g=>{const k=g.name+"|"+g.unit;if(!map.has(k))map.set(k,{key:k,name:g.name,unit:g.unit,qty:0,for:[]});const e=map.get(k);e.qty+=g.qty;if(!e.for.includes(r.name))e.for.push(r.name);});});
+  return [...map.values()].sort((a,b)=>a.name.localeCompare(b.name));
+}
+
+function plannerView(){
+  const w=week(viewWeek);
+  const ws=fromKey(viewWeek);
+  const items=shoppingItems(w);
+  const got=items.filter(i=>w.ticks[i.key]).length;
+  const groups={};items.forEach(i=>{const a=AISLE[i.name]||"Other bits";(groups[a]=groups[a]||[]).push(i);});
+  const opts=`<option value="">Choose a recipe…</option>`+RECIPES.map(r=>`<option value="${r.id}">${esc(r.name)} (${esc(r.country)})</option>`).join("");
+  return `<div class="section">
+  <div class="weeknav">
+    <div><div class="eyebrow">Bake Planner</div><h2>Week of ${esc(fmtShort(ws))}</h2></div>
+    <div class="ctrl">
+      <button class="btn small" data-week="-1" aria-label="Previous week">← Last week</button>
+      ${viewWeek!==thisWeek?`<button class="btn small mango" data-week="0">This week</button>`:""}
+      <button class="btn small" data-week="1" aria-label="Next week">Next week →</button>
+    </div>
+  </div>
+  <p style="font-weight:700;max-width:60ch">Three baking sessions a week, each one with a grown-up. Pick the day, the recipe and your baking buddy. When you've baked it, press the big button!</p>
+  <div class="sessions">
+  ${w.sessions.map((s,i)=>{const r=R[s.recipe];return `<div class="card session ${s.done?"done":""}">
+    <div class="num">Bake ${i+1}</div>
+    <label class="f" for="s${i}-day">Day<select id="s${i}-day" data-s="${i}" data-k="day">${DAYS.map((d,j)=>`<option value="${j}" ${j===s.day?"selected":""}>${d}</option>`).join("")}</select></label>
+    <label class="f" for="s${i}-recipe">Recipe<select id="s${i}-recipe" data-s="${i}" data-k="recipe">${opts.replace(`value="${s.recipe}"`,`value="${s.recipe}" selected`)}</select></label>
+    <label class="f" for="s${i}-helper">Baking with<select id="s${i}-helper" data-s="${i}" data-k="helper">${HELPERS.map(h=>`<option ${h===s.helper?"selected":""}>${h}</option>`).join("")}</select></label>
+    ${r?`<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><span class="chip ${r.level}">${r.level}</span><span class="chip">${esc(r.time)}</span><button class="btn small" data-open="${r.id}">See recipe</button><button class="btn small sky" data-bake="${r.id}">Bake along</button></div>`:""}
+    ${r?(s.done?`<button class="btn small" data-undo="${i}">Not baked yet</button>`:`<button class="btn berry beckon" data-done="${i}">${icon("cupcake")} We baked it!</button>`):""}
+  </div>`;}).join("")}
+  </div>
+
+  <div class="card" id="shop" style="display:grid;gap:16px">
+    <div class="weeknav"><div><h2>Shopping list</h2><p class="muted" style="font-weight:700">${items.length?`${got} of ${items.length} ticked`:"Pick recipes above to build your list."}</p></div>
+    ${items.length?`<button class="btn small sky" id="copy-list">${icon("copy")} Copy list</button>`:""}</div>
+    <div class="shopbar" role="group" aria-label="Which shop?"><span class="eyebrow">We're going to</span>${Object.keys(STORES).map(n=>`<button class="shopbtn" data-shop="${n}" aria-pressed="${w.shop===n}">${n}</button>`).join("")}</div>
+    <div class="storetip">${esc(STORES[w.shop]||"")}</div>
+    ${items.length?`<div class="bar"><i style="width:${got/items.length*100}%"></i></div>
+    <p class="muted" style="font-weight:700;font-size:.9rem">Tick things you already have in the cupboard too. Check the amounts, as you might have some already!</p>
+    <div class="list">${AISLE_ORDER.filter(a=>groups[a]).map(a=>`<div class="aisle"><h3>${esc(a)}</h3>${groups[a].map(it=>{const id="t-"+it.key.replace(/[^a-z0-9]/gi,"-");return `<label class="item ${w.ticks[it.key]?"got":""} ${it.key===lastTick?"justgot":""}" for="${id}"><input type="checkbox" id="${id}" data-tick="${esc(it.key)}" ${w.ticks[it.key]?"checked":""}><span class="box">${icon("tick")}</span><span class="nm">${esc(it.name)}<span class="for">for ${esc(it.for.join(", "))}</span></span><span class="q">${fmtQty(it.qty,it.unit)}</span></label>`;}).join("")}</div>`).join("")}</div>
+    ${got===items.length?`<p style="font-family:var(--display);font-size:1.4rem;color:var(--mint)">Basket full! Time to bake.</p>`:""}`:""}
+  </div>
+  </div>`;
+}
+
+function recipesView(){
+  const list=RECIPES.filter(r=>recipeFilter==="all"||r.level===recipeFilter);
+  return `<div class="section">
+  <div><div class="eyebrow">Bakes from around Europe</div><h2>Recipe Book</h2></div>
+  <div class="filters" role="group" aria-label="Filter recipes">${[["all","All bakes"],["easy","Easy"],["medium","Medium"],["challenge","Challenge"]].map(([k,l])=>`<button class="shopbtn" data-filter="${k}" aria-pressed="${recipeFilter===k}">${l}</button>`).join("")}</div>
+  <div class="grid g3">
+  ${list.map(r=>`<button class="card rcard" data-open="${r.id}">
+    <div class="art" style="background:${r.colour}">${artSvg(r.id)}</div>
+    <div class="rhead">${flag(r.country)}<div class="eyebrow">${esc(r.country)}</div></div>
+    <h3>${esc(r.name)}</h3>
+    <div class="meta"><span class="chip ${r.level}">${r.level}</span><span class="chip">${esc(r.time)}</span><span class="chip">${esc(r.makes)}</span></div>
+    <div class="skill">You'll learn: ${esc(r.skill)}</div>
+  </button>`).join("")}
+  </div>
+  <div class="note">Look for the <span class="grownup">${icon("glove")} grown-up</span> sign. Those steps need a grown-up to do them or watch closely. Always check for allergies before you bake.</div>
+  </div>`;
+}
+
+function recipeModal(id){
+  const r=R[id];if(!r)return;
+  const root=document.getElementById("modal-root");
+  root.innerHTML=`<div class="overlay" data-close="1"><div class="card modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
+    <div class="art" style="background:${r.colour};height:150px">${artSvg(r.id)}</div>
+    <div class="head"><div style="display:grid;gap:8px"><div class="rhead">${flag(r.country)}<div class="eyebrow">${esc(r.country)} · ${esc(r.makes)} · ${esc(r.time)}</div></div><h2 id="m-title">${esc(r.name)}</h2></div><button class="btn small" data-close="1" aria-label="Close">Close</button></div>
+    <p style="font-weight:600">${esc(r.intro)}</p>
+    <button class="btn berry beckon" data-bake="${r.id}" style="justify-self:start">${icon("cupcake")} Start bake-along</button>
+    ${r.allergy?`<div class="note" style="background:var(--berry-soft)"><b>Allergy alert:</b> ${esc(r.allergy)}</div>`:""}
+    <div class="cols">
+      <div><h3 style="margin-bottom:10px">You will need</h3><ul class="ing">${r.ing.map(g=>`<li><span>${esc(g.name)}</span><b>${fmtQty(g.qty,g.unit)}</b></li>`).join("")}</ul></div>
+      <div><h3 style="margin-bottom:10px">Let's bake</h3><ol class="steps">${r.steps.map(s=>`<li><span>${esc(s.t)}${s.g?` <span class="grownup">${icon("glove")} grown-up</span>`:""}</span></li>`).join("")}</ol></div>
+    </div>
+    <div class="note"><b>Top tip:</b> ${esc(r.tip)}</div>
+    <div style="display:grid;gap:8px"><div class="eyebrow">Add to my planner (week of ${esc(fmtShort(fromKey(viewWeek)))})</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">${[0,1,2].map(i=>{const s=week(viewWeek).sessions[i];return `<button class="btn small mango" data-add="${r.id}" data-slot="${i}">Bake ${i+1} · ${DAYS[s.day]}</button>`;}).join("")}</div></div>
+  </div></div>`;
+  root.querySelector(".modal .btn").focus();
+}
+
+function schoolView(){
+  const n=Object.keys(state.lessons).length;
+  return `<div class="section">
+  <div><div class="eyebrow">Baking School</div><h2>Learn the secrets</h2><p style="font-weight:700;max-width:60ch">Every great baker knows a few clever tricks. Open a lesson, try the experiment, then answer Pip's quiz question to win 2 stars. You've finished ${n} of ${LESSONS.length}.</p></div>
+  <div class="bar"><i style="width:${n/LESSONS.length*100}%"></i></div>
+  <div class="grid g2">
+  ${LESSONS.map(l=>{const done=!!state.lessons[l.id];return `<details class="card lesson">
+    <summary><span class="ico" style="background:${l.col}">${l.icon==="glove"?`<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-glove"/></svg>`:icon(l.icon)}</span><span class="ttl"><h3>${esc(l.title)}</h3><small>${esc(l.sub)}</small></span>${done?`<span class="done-mark">Done</span>`:""}</summary>
+    <div class="body"><ul>${l.body.map(b=>`<li>${esc(b)}</li>`).join("")}</ul>
+    <div class="tryit"><b>Try this:</b> ${esc(l.tryit)}</div>
+    <div class="quiz"><div class="eyebrow">Pip's quick quiz${done?"":" · answer right for +2 stars"}</div><div class="q">${esc(l.quiz.q)}</div>
+    <div class="opts">${l.quiz.opts.map((o,i)=>`<button class="opt ${done&&i===l.quiz.a?"right":""} ${!done&&quizWrong[l.id]===i?"wrong":""}" data-quiz="${l.id}" data-opt="${i}" ${done?"disabled":""}>${esc(o)}</button>`).join("")}</div>
+    ${done?`<div class="fb" style="color:var(--mint)">You got it! Lesson complete.</div>`:quizWrong[l.id]!==undefined?`<div class="fb" style="color:var(--berry)">Not quite! Have another read and try again.</div>`:""}</div></div>
+  </details>`;}).join("")}
+  </div>
+  <div class="fact">Did you know? ${esc(FACTS[2])}</div>
+  </div>`;
+}
+
+const EXAMPLE={id:"example",date:dkey(new Date()),recipe:"fairy",helper:"Mum",mood:"giggly",stars:5,fav:"Shaking the sprinkles! Some went on the floor.",next:"Try pink icing with a drop of food colouring."};
+function journalView(){
+  const d=jDraft;
+  const entries=[...state.journal].sort((a,b)=>b.date.localeCompare(a.date));
+  const showEx=entries.length===0;
+  const card=(j,ex)=>{const r=R[j.recipe];const name=r?r.name:(j.other||"Something yummy");return `<article class="card entry ${j.id===newEntry?"slap":""}"><span class="tape" aria-hidden="true"></span>
+    <div class="topline"><div><div class="eyebrow">${esc(fmtLong(fromKey(j.date)))}</div><h3>${esc(name)}</h3></div>${moodFace(j.mood)}</div>
+    ${ex?`<span class="example-tag" style="justify-self:start">Example page</span>`:""}
+    <div class="showstars" aria-label="${j.stars} out of 5 stars">${starRow(j.stars)}</div>
+    <dl>
+      <div><dt>Baked with</dt><dd>${esc(j.helper)}${r?` · ${esc(r.country)}`:""}</dd></div>
+      <div><dt>I felt</dt><dd>${esc((MOODS.find(m=>m.id===j.mood)||MOODS[0]).label)}</dd></div>
+      ${j.fav?`<div><dt>Best bit</dt><dd>${esc(j.fav)}</dd></div>`:""}
+      ${j.next?`<div><dt>Next time I'll</dt><dd>${esc(j.next)}</dd></div>`:""}
+    </dl>
+    ${ex?"":(confirmDel===j.id?`<div style="display:flex;gap:8px"><button class="btn small berry" data-del="${j.id}">Yes, delete</button><button class="btn small" data-nodel="1">Keep it</button></div>`:`<button class="btn small" data-askdel="${j.id}" style="justify-self:start">Delete page</button>`)}
+  </article>`;};
+  return `<div class="section">
+  <div class="weeknav"><div><div class="eyebrow">My Baking Journal</div><h2>Tasty memories</h2></div>${d?"":`<button class="btn berry" id="new-entry">Write a new page</button>`}</div>
+  ${d?`<form class="card jform" id="jform">
+    <h3>New journal page</h3>
+    <div class="row">
+      <label class="f" for="j-date">Date<input type="date" id="j-date" value="${esc(d.date)}" required></label>
+      <label class="f" for="j-recipe">What did you bake?<select id="j-recipe"><option value="">Something else</option>${RECIPES.map(r=>`<option value="${r.id}" ${d.recipe===r.id?"selected":""}>${esc(r.name)}</option>`).join("")}</select></label>
+      <label class="f" for="j-helper">Who did you bake with?<select id="j-helper">${HELPERS.map(h=>`<option ${h===d.helper?"selected":""}>${h}</option>`).join("")}</select></label>
+    </div>
+    <label class="f" for="j-other" ${d.recipe?"hidden":""}>Name of your bake<input type="text" id="j-other" maxlength="60" value="${esc(d.other||"")}" placeholder="e.g. Grandma's flapjacks"></label>
+    <div class="f">How did baking make you feel?<div class="moods" role="group" aria-label="Mood">${MOODS.map(m=>`<button type="button" class="mood" data-mood="${m.id}" aria-pressed="${d.mood===m.id}">${moodFace(m.id)}${esc(m.label)}</button>`).join("")}</div></div>
+    <div class="f">How tasty was it?<div class="starsin" role="group" aria-label="Tastiness">${[1,2,3,4,5].map(n=>`<button type="button" data-star="${n}" aria-label="${n} stars" class="${n<=d.stars?"lit":""}" style="--i:${n}"><svg aria-hidden="true" style="fill:${n<=d.stars?"var(--mango)":"var(--paper)"}"><use href="#i-star"/></svg></button>`).join("")}</div></div>
+    <label class="f" for="j-fav">The best bit was…<textarea id="j-fav" maxlength="300" placeholder="Licking the spoon? Watching it rise?">${esc(d.fav||"")}</textarea></label>
+    <label class="f" for="j-next">Next time I'll try…<textarea id="j-next" maxlength="300" placeholder="More sprinkles? A different shape?">${esc(d.next||"")}</textarea></label>
+    <div style="display:flex;gap:10px;flex-wrap:wrap"><button type="submit" class="btn berry">Stick it in my journal</button><button type="button" class="btn" id="j-cancel">Cancel</button></div>
+  </form>`:""}
+  <div class="entries">${showEx?card(EXAMPLE,true):entries.map(j=>card(j,false)).join("")}</div>
+  ${showEx?`<p class="muted" style="font-weight:700">This example page shows what a journal page looks like. It disappears when you write your first one.</p>`:""}
+  </div>`;
+}
+
+function render(enter){
+  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===tab)));
+  view.innerHTML=tab==="home"?homeView():tab==="planner"?plannerView():tab==="recipes"?recipesView():tab==="school"?schoolView():journalView();
+  view.querySelectorAll(".section>*").forEach((c,i)=>c.style.setProperty("--s",i));
+  view.querySelectorAll(".grid,.sessions,.entries,.badges,.passport").forEach(g=>[...g.children].forEach((c,i)=>c.style.setProperty("--n",i)));
+  if(tab==="home")newStamp=null;
+  newEntry=null;lastTick=null;
+  if(enter){view.classList.remove("enter");void view.offsetWidth;view.classList.add("enter");clearTimeout(enterT);enterT=setTimeout(()=>view.classList.remove("enter"),1800);if(tab==="home")countUp();}
+}
+function go(t,anchor){tab=t;try{history.replaceState(null,"","#"+t);}catch(e){}render(true);if(anchor){const el=document.getElementById(anchor);if(el)el.scrollIntoView({behavior:"smooth"});}else window.scrollTo({top:0});}
+function newDraft(pre){jDraft=Object.assign({date:dkey(new Date()),recipe:"",helper:"Mum",mood:"proud",stars:5,fav:"",next:"",other:""},pre||{});}
+function readDraft(){if(!jDraft)return;const g=id=>document.getElementById(id);if(g("j-date"))jDraft.date=g("j-date").value||jDraft.date;if(g("j-fav"))jDraft.fav=g("j-fav").value;if(g("j-next"))jDraft.next=g("j-next").value;if(g("j-other"))jDraft.other=g("j-other").value;if(g("j-helper"))jDraft.helper=g("j-helper").value;}
+
+/* ---------- Events ---------- */
+document.querySelector("nav.tabs").addEventListener("click",e=>{const b=e.target.closest(".tab");if(b)go(b.dataset.tab);});
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button,[data-close]");if(!t)return;
+  if(t.dataset.close!==undefined&&(t===e.target||t.tagName==="BUTTON")){if(t.classList.contains("overlay")&&e.target!==t)return;document.getElementById("modal-root").innerHTML="";return;}
+  if(t.dataset.go){go(t.dataset.go,t.dataset.anchor);return;}
+  if(t.id==="motion-toggle"){state.calm=!state.calm;save();applyMotion();if(!state.calm){render(true);toast("Wiggles are back on!");}return;}
+  if(t.dataset.pip){const line=PIP_TALK[pipIdx++%PIP_TALK.length];const b=document.getElementById("pip-line");if(b){b.textContent=line;b.classList.remove("say");void b.offsetWidth;b.classList.add("say");}t.classList.remove("jump");void t.offsetWidth;t.classList.add("jump");burstAt(t,14);return;}
+  if(t.dataset.bake){openBakeAlong(t.dataset.bake);return;}
+  if(t.dataset.baclose){closeBA();return;}
+  if(t.dataset.bastep){const r=R[BA.id];const d=+t.dataset.bastep;if(d>0&&BA.step===r.steps.length-1){stopTimer();BA.done=true;}else{BA.step=Math.max(0,Math.min(r.steps.length-1,BA.step+d));if(d>0)burstAt(t,18);}renderBA();document.querySelector(".ba")&&document.querySelector(".ba").scrollTo({top:0});return;}
+  if(t.dataset.batimer){const T=BA&&BA.timer;if(!T)return;if(t.dataset.batimer==="reset"){stopTimer();T.left=T.total;renderBA();return;}if(T.left===0)return;try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();audioCtx.resume&&audioCtx.resume();}catch(e){}if(T.running){stopTimer();}else{T.running=true;T.iv=setInterval(timerTick,1000);}renderBA();return;}
+  if(t.dataset.bajournal){const id=BA.id;closeBA();newDraft({recipe:id});go("journal");return;}
+  if(t.dataset.open){recipeModal(t.dataset.open);return;}
+  if(t.dataset.add){const w=week(viewWeek);w.sessions[+t.dataset.slot].recipe=t.dataset.add;w.sessions[+t.dataset.slot].done=false;save();document.getElementById("modal-root").innerHTML="";toast(`${R[t.dataset.add].name} added to Bake ${+t.dataset.slot+1}!`);render();return;}
+  if(t.dataset.week){const n=+t.dataset.week;if(n===0)viewWeek=thisWeek;else{const d=fromKey(viewWeek);d.setDate(d.getDate()+7*n);viewWeek=dkey(d);}render();return;}
+  if(t.dataset.shop){week(viewWeek).shop=t.dataset.shop;save();render();return;}
+  if(t.dataset.done){const w=week(viewWeek),s=w.sessions[+t.dataset.done];const had=stamps(state);s.done=true;save();confetti();if(R[s.recipe]&&!had.has(R[s.recipe].country))newStamp=R[s.recipe].country;const d=fromKey(viewWeek);d.setDate(d.getDate()+s.day);const dd=d>new Date()?new Date():d;newDraft({recipe:s.recipe,helper:s.helper,date:dkey(dd)});toast("Amazing baking! Now write about it in your journal.");go("journal");return;}
+  if(t.dataset.undo){week(viewWeek).sessions[+t.dataset.undo].done=false;save();render();return;}
+  if(t.dataset.filter){recipeFilter=t.dataset.filter;render();return;}
+  if(t.dataset.quiz){const id=t.dataset.quiz,l=LESSONS.find(x=>x.id===id),i=+t.dataset.opt;if(i===l.quiz.a){state.lessons[id]=true;delete quizWrong[id];save();confetti();toast("Correct! +2 stars for you.");}else{quizWrong[id]=i;}render();const ds=[...document.querySelectorAll("details.lesson")];const idx=LESSONS.findIndex(x=>x.id===id);if(ds[idx])ds[idx].open=true;return;}
+  if(t.id==="new-entry"){newDraft();render();return;}
+  if(t.id==="j-cancel"){jDraft=null;render();return;}
+  if(t.dataset.mood){readDraft();jDraft.mood=t.dataset.mood;render();return;}
+  if(t.dataset.star){readDraft();jDraft.stars=+t.dataset.star;render();return;}
+  if(t.dataset.askdel){confirmDel=t.dataset.askdel;render();return;}
+  if(t.dataset.nodel){confirmDel=null;render();return;}
+  if(t.dataset.del){state.journal=state.journal.filter(j=>j.id!==t.dataset.del);confirmDel=null;save();render();return;}
+  if(t.id==="copy-list"){const w=week(viewWeek);const items=shoppingItems(w).filter(i=>!w.ticks[i.key]);const txt=`Baking shopping list (${w.shop}):\n`+items.map(i=>`- ${i.name}: ${fmtQty(i.qty,i.unit)}`).join("\n");
+    const fallback=()=>{const ta=document.createElement("textarea");ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand("copy");}catch(_){}ta.remove();toast(ok?"List copied!":"Couldn't copy. Ask a grown-up to type it into their phone.");};
+    try{navigator.clipboard.writeText(txt).then(()=>toast("List copied! Paste it into a message for your grown-up."),fallback);}catch(_){fallback();}return;}
+});
+document.addEventListener("change",e=>{
+  const t=e.target;
+  if(t.dataset.s!==undefined){const s=week(viewWeek).sessions[+t.dataset.s];const k=t.dataset.k;s[k]=k==="day"?+t.value:t.value;if(k==="recipe")s.done=false;save();render();return;}
+  if(t.dataset.tick){const w=week(viewWeek);if(t.checked){w.ticks[t.dataset.tick]=true;lastTick=t.dataset.tick;}else delete w.ticks[t.dataset.tick];save();const items=shoppingItems(w);if(t.checked&&items.every(i=>w.ticks[i.key]))confetti();else if(t.checked)burstAt(t.closest(".item").querySelector(".box"),16);render();const el=document.getElementById(t.id);if(el)el.focus({preventScroll:true});return;}
+  if(t.id==="j-recipe"){readDraft();jDraft.recipe=t.value;render();return;}
+});
+document.addEventListener("input",e=>{if(e.target.id==="baker-name"){state.name=e.target.value;save();const h=document.getElementById("hello-name");if(h)h.textContent=state.name.trim()||"Super Baker";const pl=document.getElementById("pip-line");if(pl){const w=week(thisWeek);const done=w.sessions.filter(s=>s.done).length;const next=w.sessions.filter(s=>!s.done&&R[s.recipe]).sort((a,b)=>a.day-b.day)[0];pl.textContent=pipLine(w,next,done);}}});
+document.addEventListener("submit",e=>{
+  if(e.target.id!=="jform")return;e.preventDefault();readDraft();
+  if(!jDraft.recipe&&!jDraft.other.trim()){toast("Type the name of your bake first.");return;}
+  const nid="j"+Date.now().toString(36);newEntry=nid;
+  state.journal.push({id:nid,date:jDraft.date,recipe:jDraft.recipe,other:jDraft.recipe?"":jDraft.other.trim(),helper:jDraft.helper,mood:jDraft.mood,stars:jDraft.stars,fav:jDraft.fav.trim(),next:jDraft.next.trim()});
+  const r=R[jDraft.recipe];const before=stamps({journal:state.journal.slice(0,-1),weeks:state.weeks});
+  jDraft=null;save();confetti();if(r&&!before.has(r.country))newStamp=r.country;
+  toast(r&&!before.has(r.country)?`New passport stamp: ${r.country}!`:"Page added to your journal!");render();
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(BA)closeBA();else document.getElementById("modal-root").innerHTML="";}});
+
+const h=(location.hash||"").slice(1);if(["home","planner","recipes","school","journal"].includes(h))tab=h;
+applyMotion();
+render(true);
+})();
+</script>
+</body>
+</html>
