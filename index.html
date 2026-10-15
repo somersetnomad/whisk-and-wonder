@@ -9,11 +9,11 @@
 <meta name="theme-color" content="#FFB627">
 <title>Whisk &amp; Wonder</title>
 <style>
-@font-face{font-family:"Bagel Fat One";src:url("fonts/bagel-fat-one-latin-400-normal.woff2") format("woff2");font-weight:400;font-display:swap}
-@font-face{font-family:"Nunito";src:url("fonts/nunito-latin-400-normal.woff2") format("woff2");font-weight:400;font-display:swap}
-@font-face{font-family:"Nunito";src:url("fonts/nunito-latin-600-normal.woff2") format("woff2");font-weight:600;font-display:swap}
-@font-face{font-family:"Nunito";src:url("fonts/nunito-latin-800-normal.woff2") format("woff2");font-weight:800;font-display:swap}
-@font-face{font-family:"Nunito";src:url("fonts/nunito-latin-900-normal.woff2") format("woff2");font-weight:900;font-display:swap}
+@font-face{font-family:"Bagel Fat One";src:url("bagel-fat-one-latin-400-normal.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Nunito";src:url("nunito-latin-400-normal.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Nunito";src:url("nunito-latin-600-normal.woff2") format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Nunito";src:url("nunito-latin-800-normal.woff2") format("woff2");font-weight:800;font-display:swap}
+@font-face{font-family:"Nunito";src:url("nunito-latin-900-normal.woff2") format("woff2");font-weight:900;font-display:swap}
 html{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}
 
 /* Layout: chunky "cookie-cutter" sticker cards with thick ink outlines on a sprinkle-dotted buttercup ground; tabbed app, one column on phones */
@@ -450,6 +450,24 @@ audio{max-width:100%;height:40px}
   .fdate b{font-size:1.5rem}
   .pickbar{top:calc(env(safe-area-inset-top,0px) + 112px)}
 }
+/* Buddy Studio */
+#bs-root .ba{z-index:59}
+.buddygrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.buddycard{display:grid;gap:8px;justify-items:center;text-align:center;padding:14px}
+.buddycard.chosen{background:var(--mango-soft);box-shadow:0 0 0 4px var(--mango),5px 5px 0 var(--shadow)}
+.buddypick{background:none;border:0;cursor:pointer;display:grid;gap:4px;justify-items:center;padding:0}
+.buddypick .pipfig svg{width:96px;height:120px}
+.buddypick small{color:var(--muted);font-weight:700}
+.newbuddy{cursor:pointer;border-style:dashed;align-content:center}
+.newbuddy .plus{font-family:var(--display);font-size:3rem;line-height:1}
+.studio{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:20px;align-items:start}
+.studiopreview{display:grid;gap:12px;justify-items:center;text-align:center;position:sticky;top:16px;background:var(--sky-soft)}
+.studiopreview .pipfig.big svg{width:180px;height:225px}
+.studiopreview .bubble::before,.studiopreview .bubble::after{display:none}
+.studiocontrols{display:grid;gap:14px}
+.studiocontrols .shopbtn{padding:4px 12px;font-size:.88rem}
+.pipcorner .pipfig svg{width:100%;height:auto;max-height:150px}
+@media (max-width:760px){.studio{grid-template-columns:1fr}.studiopreview{position:static}.studiopreview .pipfig.big svg{width:130px;height:160px}}
 
 </style>
 </head>
@@ -1969,10 +1987,10 @@ function untilText(n){return n===0?"Today!":n===1?"Tomorrow!":n<14?`In ${n} days
 
 /* ---------- State (kept on this device) ---------- */
 const LS="whisk-wonder-v1";
-function blank(){return {v:2,name:"",calm:false,lessons:{},weeks:{},journal:[],custom:[],cv:{},plan:{},safety:{},cost:null,voiceOK:false};}
+function blank(){return {v:2,name:"",calm:false,lessons:{},weeks:{},journal:[],custom:[],cv:{},plan:{},safety:{},cost:null,voiceOK:false,buddy:"pip",buddies:[]};}
 function normal(s){const b=blank();s=Object.assign(b,s||{});
   if(!s.weeks||typeof s.weeks!=="object")s.weeks={};
-  ["journal","custom"].forEach(k=>{if(!Array.isArray(s[k]))s[k]=[];});
+  ["journal","custom","buddies"].forEach(k=>{if(!Array.isArray(s[k]))s[k]=[];});
   ["lessons","cv","plan","safety"].forEach(k=>{if(!s[k]||typeof s[k]!=="object")s[k]={};});
   s.journal.forEach(j=>{j.photos=j.photos||[];j.audio=j.audio||[];});
   return s;}
@@ -2050,10 +2068,6 @@ function moodFace(m){
   const fillMouth=mo.id==="giggly"||mo.id==="amazed";
   return `<svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="19" fill="${mo.col}" stroke="var(--line)" stroke-width="3"/>${eyes}<path d="${mo.mouth}" fill="${fillMouth?"var(--line)":"none"}" stroke="var(--line)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 }
-function pip(face){
-  const mouth=face==="wow"?'<ellipse cx="60" cy="80" rx="6" ry="7" fill="var(--line)"/>':'<path d="M47 76q13 14 26 0" fill="var(--line)" stroke="var(--line)" stroke-width="3" stroke-linejoin="round"/><path d="M53 80q7 5 14 0" fill="#E8304F"/>';
-  return `<svg viewBox="0 0 120 160" aria-hidden="true"><rect x="53" y="92" width="14" height="64" rx="7" fill="#C98B4F" ${L}/><path d="M53 120h14M53 134h14" stroke="#A86C36" stroke-width="2"/><g class="pip-arm"><path d="M88 88q16-6 19-26" fill="none" stroke="var(--line)" stroke-width="4" stroke-linecap="round"/><circle cx="107" cy="60" r="7" fill="#E8B47A" stroke="var(--line)" stroke-width="3"/></g><ellipse cx="60" cy="66" rx="36" ry="40" fill="#E8B47A" stroke="var(--line)" stroke-width="4"/><path d="M36 70q4 12 12 20M84 58q2 10-2 20" fill="none" stroke="#C98B4F" stroke-width="2.5" stroke-linecap="round"/><path d="M30 38c-14-6-10-28 8-24c3-16 41-16 44 0c18-4 22 18 8 24z" fill="#FFFFFF" ${L}/><rect x="30" y="34" width="60" height="12" rx="4" fill="#FFFFFF" ${L}/><g class="pip-eyes"><circle cx="47" cy="64" r="5" fill="var(--line)"/><circle cx="73" cy="64" r="5" fill="var(--line)"/><circle cx="49" cy="62" r="1.8" fill="#FFFFFF"/><circle cx="75" cy="62" r="1.8" fill="#FFFFFF"/></g><circle cx="38" cy="76" r="5" fill="#FF8FA8" opacity=".8"/><circle cx="82" cy="76" r="5" fill="#FF8FA8" opacity=".8"/>${mouth}</svg>`;
-}
 let toastT;
 function toast(msg){let t=document.querySelector(".toast");if(!t){t=document.createElement("div");t.className="toast";t.setAttribute("role","status");document.body.appendChild(t);}t.innerHTML=pip("wow")+`<span>${esc(msg)}</span>`;t.hidden=false;t.classList.remove("show");void t.offsetWidth;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>{t.hidden=true;},3000);}
 function copyText(txt,okMsg){
@@ -2107,6 +2121,137 @@ async function shrink(file){const url=URL.createObjectURL(file);try{const img=aw
 function blobToDataURL(b){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(b);});}
 function dataURLToBlob(du){const [h,d]=du.split(",");const mime=(h.match(/data:([^;]+)/)||[])[1]||"application/octet-stream";const bin=atob(d);const a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:mime});}
 
+/* ---------- Baking buddies: ready-made mascots and a build-your-own studio ---------- */
+const BODIES={
+  spoon:{label:"Wooden spoon",face:66,top:26},
+  egg:{label:"Egg",face:84,top:30},
+  cupcake:{label:"Cupcake",face:104,top:34},
+  cookie:{label:"Cookie",face:88,top:38},
+  loaf:{label:"Bread loaf",face:96,top:48},
+  dough:{label:"Dough ball",face:96,top:48},
+  croissant:{label:"Croissant",face:80,top:46}
+};
+const EARS={none:"None",bunny:"Bunny",bear:"Bear",mouse:"Mouse",cat:"Cat"};
+const HATS={chef:"Chef's hat",none:"No hat",crown:"Crown",bow:"Bow",bobble:"Bobble hat",flower:"Flower",cap:"Cap"};
+const EYES={dots:"Dots",sparkle:"Sparkly",happy:"Happy",sleepy:"Sleepy",wink:"Wink"};
+const MOUTHS={smile:"Smile",grin:"Big grin",wow:"Wow",tongue:"Cheeky",cat:"Kitty"};
+const EXTRAS={none:"Nothing",sprinkles:"Sprinkles",glasses:"Glasses",freckles:"Freckles",apron:"Apron"};
+const PERSONALITY={cheerful:"Cheerful",silly:"Silly (loves jokes)",wise:"Wise (loves facts)"};
+const BUDDY_COLOURS=["#E8B47A","#FFF3E0","#FF8FB8","#C68642","#F5F5F5","#B0BEC5","#E0A458","#D98A3D","#9AD8F5","#B69CFF","#8EE3B8","#FFD966"];
+const PRESET_BUDDIES=[
+  {id:"pip",name:"Pip",body:"spoon",color:"#E8B47A",ears:"none",hat:"chef",eyes:"dots",mouth:"smile",cheeks:true,extra:"none",personality:"cheerful",saying:"Let's get baking!"},
+  {id:"dot",name:"Dot",body:"egg",color:"#FFF3E0",ears:"none",hat:"bow",eyes:"sparkle",mouth:"grin",cheeks:true,extra:"freckles",personality:"cheerful",saying:"Crack on, superstar!"},
+  {id:"sprinkle",name:"Sprinkle",body:"cupcake",color:"#FF8FB8",ears:"none",hat:"none",eyes:"sparkle",mouth:"smile",cheeks:true,extra:"sprinkles",personality:"silly",saying:"Life is better with sprinkles!"},
+  {id:"biscuit",name:"Biscuit",body:"dough",color:"#C68642",ears:"bear",hat:"chef",eyes:"dots",mouth:"tongue",cheeks:true,extra:"apron",personality:"silly",saying:"Bear-y delicious!"},
+  {id:"mochi",name:"Mochi",body:"dough",color:"#F5F5F5",ears:"bunny",hat:"flower",eyes:"happy",mouth:"cat",cheeks:true,extra:"none",personality:"cheerful",saying:"Hop to it!"},
+  {id:"crumble",name:"Crumble",body:"dough",color:"#B0BEC5",ears:"mouse",hat:"bobble",eyes:"wink",mouth:"grin",cheeks:true,extra:"none",personality:"silly",saying:"Squeak! Is that cheese scones I smell?"},
+  {id:"professor",name:"Professor Cookie",body:"cookie",color:"#E0A458",ears:"none",hat:"cap",eyes:"dots",mouth:"smile",cheeks:false,extra:"glasses",personality:"wise",saying:"Baking is delicious science!"},
+  {id:"loafy",name:"Loafy",body:"loaf",color:"#D98A3D",ears:"none",hat:"crown",eyes:"sleepy",mouth:"smile",cheeks:true,extra:"none",personality:"wise",saying:"Rise and shine!"},
+  {id:"bonbon",name:"Bonjour",body:"croissant",color:"#F2B45A",ears:"cat",hat:"bow",eyes:"sparkle",mouth:"cat",cheeks:true,extra:"none",personality:"cheerful",saying:"Ooh la la, what a bake!"}
+];
+function shade(hex,amt){const n=parseInt(hex.slice(1),16);let r=(n>>16)&255,g=(n>>8)&255,b=n&255;r=Math.max(0,Math.min(255,Math.round(r*(1+amt))));g=Math.max(0,Math.min(255,Math.round(g*(1+amt))));b=Math.max(0,Math.min(255,Math.round(b*(1+amt))));return "#"+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);}
+const SK='stroke="var(--line)" stroke-width="4" stroke-linejoin="round"';
+function buddyBody(m){
+  const c=m.color,d=shade(c,-.18);
+  switch(m.body){
+    case "spoon":return `<rect x="53" y="98" width="14" height="58" rx="7" fill="${d}" ${L}/><path d="M53 124h14M53 138h14" stroke="${shade(c,-.3)}" stroke-width="2"/><ellipse cx="60" cy="66" rx="36" ry="40" fill="${c}" ${SK}/><path d="M36 70q4 12 12 20M84 58q2 10-2 20" fill="none" stroke="${d}" stroke-width="2.5" stroke-linecap="round"/>`;
+    case "egg":return `<path d="M60 30C34 30 20 72 22 100c2 30 20 48 38 48s36-18 38-48C100 72 86 30 60 30z" fill="${c}" ${SK}/><path d="M44 148v8h-8M76 148v8h8" fill="none" stroke="var(--line)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
+    case "cupcake":return `<path d="M24 76h72l-10 72H34z" fill="#4D9DFF" ${SK}/><path d="M42 78l4 68M60 78v68M78 78l-4 68" stroke="var(--line)" stroke-width="2"/><path d="M18 80c-8-28 14-46 42-46s50 18 42 46z" fill="${c}" ${SK}/><circle cx="60" cy="30" r="8" fill="#E8304F" ${L}/>`;
+    case "cookie":return `<circle cx="60" cy="88" r="52" fill="${c}" ${SK}/>${[[34,64],[86,70],[40,116],[84,118],[60,138],[30,92],[92,96]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="5" fill="#5D3A1A"/>`).join("")}`;
+    case "loaf":return `<path d="M10 82q0-34 50-34t50 34v64H10z" fill="${c}" ${SK}/><path d="M28 64q10-10 20 0M54 58q10-10 20 0M80 64q10-10 20 0" fill="none" stroke="${shade(c,-.3)}" stroke-width="3" stroke-linecap="round"/><path d="M10 120h100" stroke="${d}" stroke-width="2"/>`;
+    case "croissant":return `<path d="M4 132C0 74 28 40 60 40s60 34 56 92q-14-10-22-4q-6-20-34-20t-34 20q-8-6-22 4z" fill="${c}" ${SK}/><path d="M30 52l10 52M60 40v52M90 52l-10 52" stroke="${d}" stroke-width="3" stroke-linecap="round"/>`;
+    default:return `<path d="M14 120c0-44 20-72 46-72s46 28 46 72c0 22-20 32-46 32s-46-10-46-32z" fill="${c}" ${SK}/><path d="M34 150q-6 6-14 4M86 150q6 6 14 4" fill="none" stroke="var(--line)" stroke-width="4" stroke-linecap="round"/>`;
+  }
+}
+function buddyEars(m,top){
+  const c=m.color,inner="#FF8FA8";
+  switch(m.ears){
+    case "bunny":return `<g transform="translate(0 ${top-26})"><path d="M40 30c-10-30 2-46 10-44s8 24 4 46z" fill="${c}" ${L}/><path d="M44 26c-4-18 2-28 6-26" fill="none" stroke="${inner}" stroke-width="4" stroke-linecap="round"/><path d="M80 30c10-30-2-46-10-44s-8 24-4 46z" fill="${c}" ${L}/><path d="M76 26c4-18-2-28-6-26" fill="none" stroke="${inner}" stroke-width="4" stroke-linecap="round"/></g>`;
+    case "bear":return `<g transform="translate(0 ${top-26})">${[30,90].map(x=>`<circle cx="${x}" cy="32" r="13" fill="${c}" ${L}/><circle cx="${x}" cy="32" r="6" fill="${inner}"/>`).join("")}</g>`;
+    case "mouse":return `<g transform="translate(0 ${top-26})">${[24,96].map(x=>`<circle cx="${x}" cy="34" r="18" fill="${c}" ${L}/><circle cx="${x}" cy="34" r="10" fill="${inner}"/>`).join("")}</g>`;
+    case "cat":return `<g transform="translate(0 ${top-26})"><path d="M28 44l4-30 20 18z" fill="${c}" ${L}/><path d="M92 44l-4-30-20 18z" fill="${c}" ${L}/><path d="M33 36l1-12 8 8M87 36l-1-12-8 8" fill="${inner}"/></g>`;
+    default:return "";
+  }
+}
+function buddyHat(m,top){
+  const y=top;
+  switch(m.hat){
+    case "chef":return `<g transform="translate(0 ${y-26})"><path d="M30 38c-14-6-10-28 8-24c3-16 41-16 44 0c18-4 22 18 8 24z" fill="#FFFFFF" ${L}/><rect x="30" y="34" width="60" height="12" rx="4" fill="#FFFFFF" ${L}/></g>`;
+    case "crown":return `<g transform="translate(0 ${y-26})"><path d="M34 44l-4-26 14 12 16-18 16 18 14-12-4 26z" fill="#FFC107" ${L}/>${[[44,36],[60,32],[76,36]].map(([x,yy])=>`<circle cx="${x}" cy="${yy}" r="3" fill="#E8304F"/>`).join("")}</g>`;
+    case "bow":return `<g transform="translate(0 ${y-26})"><path d="M60 32l-20-12v24zM60 32l20-12v24z" fill="#FF4F7B" ${L}/><circle cx="60" cy="32" r="6" fill="#FF4F7B" ${L}/></g>`;
+    case "bobble":return `<g transform="translate(0 ${y-26})"><path d="M32 46c0-24 12-34 28-34s28 10 28 34z" fill="#4D9DFF" ${L}/><rect x="28" y="40" width="64" height="10" rx="5" fill="#FFFFFF" ${L}/><circle cx="60" cy="10" r="8" fill="#FFFFFF" ${L}/><path d="M42 30h36" stroke="#FFFFFF" stroke-width="3"/></g>`;
+    case "flower":return `<g transform="translate(0 ${y-26})">${[0,72,144,216,288].map(a=>`<ellipse cx="78" cy="30" rx="6" ry="10" fill="#FFD966" stroke="var(--line)" stroke-width="2" transform="rotate(${a} 78 38) translate(0 0)"/>`).join("")}<circle cx="78" cy="38" r="6" fill="#FF8A1F" stroke="var(--line)" stroke-width="2"/></g>`;
+    case "cap":return `<g transform="translate(0 ${y-26})"><path d="M60 22l34 12-34 12-34-12z" fill="#2A2160" stroke="var(--line)" stroke-width="2"/><path d="M42 40v8q18 8 36 0v-8" fill="#2A2160" stroke="var(--line)" stroke-width="2"/><path d="M94 34v14" stroke="#FFC107" stroke-width="3"/><circle cx="94" cy="50" r="3" fill="#FFC107"/></g>`;
+    default:return "";
+  }
+}
+function buddyFace(m,face){
+  const ex=(m.eyes==="sparkle")?`<circle cx="47" cy="64" r="7" fill="var(--line)"/><circle cx="73" cy="64" r="7" fill="var(--line)"/><circle cx="50" cy="61" r="2.6" fill="#FFF"/><circle cx="76" cy="61" r="2.6" fill="#FFF"/><circle cx="45" cy="67" r="1.4" fill="#FFF"/><circle cx="71" cy="67" r="1.4" fill="#FFF"/>`
+    :m.eyes==="happy"?`<path d="M41 66q6-8 12 0M67 66q6-8 12 0" fill="none" stroke="var(--line)" stroke-width="4" stroke-linecap="round"/>`
+    :m.eyes==="sleepy"?`<path d="M41 63q6 6 12 0M67 63q6 6 12 0" fill="none" stroke="var(--line)" stroke-width="4" stroke-linecap="round"/>`
+    :m.eyes==="wink"?`<circle cx="47" cy="64" r="5" fill="var(--line)"/><circle cx="49" cy="62" r="1.8" fill="#FFF"/><path d="M67 65q6-6 12 0" fill="none" stroke="var(--line)" stroke-width="4" stroke-linecap="round"/>`
+    :`<circle cx="47" cy="64" r="5" fill="var(--line)"/><circle cx="73" cy="64" r="5" fill="var(--line)"/><circle cx="49" cy="62" r="1.8" fill="#FFF"/><circle cx="75" cy="62" r="1.8" fill="#FFF"/>`;
+  const mo=face==="wow"||m.mouth==="wow"?`<ellipse cx="60" cy="80" rx="6" ry="7" fill="var(--line)"/>`
+    :m.mouth==="grin"?`<path d="M45 74q15 18 30 0z" fill="var(--line)" stroke="var(--line)" stroke-width="3" stroke-linejoin="round"/><path d="M52 81q8 5 16 0" fill="#E8304F"/>`
+    :m.mouth==="tongue"?`<path d="M48 76q12 10 24 0" fill="none" stroke="var(--line)" stroke-width="3.5" stroke-linecap="round"/><path d="M58 80q5 10 10 0" fill="#E8304F" stroke="var(--line)" stroke-width="2"/>`
+    :m.mouth==="cat"?`<path d="M50 76q5 6 10 0q5 6 10 0" fill="none" stroke="var(--line)" stroke-width="3.5" stroke-linecap="round"/>`
+    :`<path d="M47 76q13 14 26 0" fill="var(--line)" stroke="var(--line)" stroke-width="3" stroke-linejoin="round"/><path d="M53 80q7 5 14 0" fill="#E8304F"/>`;
+  const cheeks=m.cheeks?`<circle cx="36" cy="76" r="6" fill="#FF8FA8" opacity=".8"/><circle cx="84" cy="76" r="6" fill="#FF8FA8" opacity=".8"/>`:"";
+  const extra=m.extra==="glasses"?`<g fill="none" stroke="var(--line)" stroke-width="3"><circle cx="47" cy="64" r="11"/><circle cx="73" cy="64" r="11"/><path d="M58 64h4M36 62l-8-3M84 62l8-3"/></g>`
+    :m.extra==="freckles"?[[38,70],[42,74],[34,74],[82,70],[78,74],[86,74]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.4" fill="${shade(m.color,-.45)}"/>`).join(""):"";
+  return `<g transform="translate(0 ${BODIES[m.body].face-66})"><g class="pip-eyes">${ex}</g>${cheeks}${mo}${extra}</g>`;
+}
+function buddyExtrasBody(m){
+  const fy=BODIES[m.body].face;
+  if(m.extra==="sprinkles")return sprink([[30,fy-34,-30,"#21C6A0"],[48,fy-44,20,"#FFB627"],[74,fy-42,-50,"#4D9DFF"],[92,fy-30,35,"#B69CFF"],[60,fy-30,60,"#FFFFFF"],[86,fy+40,10,"#E8304F"],[34,fy+38,-20,"#FFB627"]]);
+  if(m.extra==="apron")return `<path d="M40 ${fy+22}h40l6 40H34z" fill="#FFFFFF" ${L}/><path d="M40 ${fy+22}q-6-10 0-18M80 ${fy+22}q6-10 0-18" fill="none" stroke="var(--line)" stroke-width="2.5"/><rect x="52" y="${fy+36}" width="16" height="12" rx="3" fill="#FF8FB8" stroke="var(--line)" stroke-width="2"/>`;
+  return "";
+}
+function buddySvg(m,face){
+  m=Object.assign({},PRESET_BUDDIES[0],m||{});if(!BODIES[m.body])m.body="spoon";
+  const top=BODIES[m.body].top,fy=BODIES[m.body].face;
+  const arm=`<g transform="translate(${m.body==="cookie"||m.body==="loaf"||m.body==="dough"||m.body==="croissant"?14:0} ${fy-66})"><g class="pip-arm"><path d="M88 88q16-6 19-26" fill="none" stroke="var(--line)" stroke-width="4" stroke-linecap="round"/><circle cx="107" cy="60" r="7" fill="${m.color}" stroke="var(--line)" stroke-width="3"/></g></g>`;
+  return `<svg viewBox="-12 -16 144 180" aria-hidden="true">${buddyEars(m,top)}${arm}${buddyBody(m)}${buddyExtrasBody(m)}${buddyFace(m,face)}${buddyHat(m,top)}</svg>`;
+}
+function currentBuddy(){const id=state.buddy||"pip";return state.buddies.find(b=>b.id===id)||PRESET_BUDDIES.find(b=>b.id===id)||PRESET_BUDDIES[0];}
+const BN=()=>currentBuddy().name||"Pip";
+function pip(face){return buddySvg(currentBuddy(),face);}
+
+/* Buddy Studio */
+let BS=null; /* {mode:"choose"|"make", draft} */
+function studioView(){
+  const cur=currentBuddy(),mine=state.buddies;
+  const d=BS.draft;
+  const row=(k,label,opts)=>`<div class="f"><span>${label}</span><div class="btnrow">${Object.entries(opts).map(([v,l])=>`<button type="button" class="shopbtn" data-a="bspart" data-k="${k}" data-v="${v}" aria-pressed="${d[k]===v}">${esc(l)}</button>`).join("")}</div></div>`;
+  return `<div class="ba"><div class="ba-in">
+  <div class="ba-top"><div><div class="eyebrow">Buddy Studio</div><h2>Choose your baking buddy</h2></div><button class="btn small" data-a="bsclose">Close</button></div>
+  <div class="btnrow" role="tablist"><button class="tab" role="tab" data-a="bsmode" data-v="choose" aria-selected="${BS.mode==="choose"}">Choose a buddy</button><button class="tab" role="tab" data-a="bsmode" data-v="make" aria-selected="${BS.mode==="make"}">Make my own</button></div>
+  ${BS.mode==="choose"?`
+  <div class="buddygrid">${PRESET_BUDDIES.concat(mine).map(b=>`<div class="card buddycard ${cur.id===b.id?"chosen":""}">
+    <button class="buddypick" data-a="bsuse" data-id="${esc(b.id)}" aria-label="Choose ${esc(b.name)}"><span class="pipfig">${buddySvg(b)}</span><b>${esc(b.name)}</b><small>${esc(PERSONALITY[b.personality]||"")}</small></button>
+    ${cur.id===b.id?`<span class="chip">Your buddy</span>`:""}
+    ${b.id.startsWith("my-")?`<div class="btnrow"><button class="btn small" data-a="bsedit" data-id="${esc(b.id)}">Edit</button>${BS.confirm===b.id?`<button class="btn small berry" data-a="bsdel" data-id="${esc(b.id)}">Yes, delete</button><button class="btn small" data-a="bsnodel">Keep</button>`:`<button class="btn small" data-a="bsaskdel" data-id="${esc(b.id)}">Delete</button>`}</div>`:""}
+  </div>`).join("")}
+  <button class="card buddycard newbuddy" data-a="bsmode" data-v="make"><span class="plus">+</span><b>Make my own buddy</b></button></div>`
+  :`<div class="studio">
+    <div class="card studiopreview"><div class="pipfig big">${buddySvg(d)}</div><div class="bubble">${esc(d.saying||"Hello! I'm your new baking buddy.")}</div><h3>${esc(d.name||"My buddy")}</h3>
+      <button type="button" class="btn small" data-a="bsrandom">${icon("dice")} Surprise mix</button></div>
+    <div class="card studiocontrols">
+      <label class="f" for="bs-name">Name<input type="text" id="bs-name" data-bs="name" maxlength="20" value="${esc(d.name)}" placeholder="e.g. Captain Crumbs"></label>
+      ${row("body","Body",Object.fromEntries(Object.entries(BODIES).map(([k,v])=>[k,v.label])))}
+      <div class="f"><span>Colour</span><div class="btnrow">${BUDDY_COLOURS.map(c=>`<button type="button" class="swatch" data-a="bspart" data-k="color" data-v="${c}" aria-pressed="${d.color===c}" style="background:${c}" aria-label="Colour ${c}"></button>`).join("")}</div></div>
+      ${row("ears","Ears",EARS)}${row("hat","Hat",HATS)}${row("eyes","Eyes",EYES)}${row("mouth","Mouth",MOUTHS)}${row("extra","Extra",EXTRAS)}
+      <div class="f"><span>Rosy cheeks</span><div class="btnrow"><button type="button" class="shopbtn" data-a="bscheeks" aria-pressed="${!!d.cheeks}">${d.cheeks?"On":"Off"}</button></div></div>
+      ${row("personality","Personality",PERSONALITY)}
+      <label class="f" for="bs-saying">Favourite saying<input type="text" id="bs-saying" data-bs="saying" maxlength="60" value="${esc(d.saying)}" placeholder="e.g. Whisk it like you mean it!"></label>
+      <div class="btnrow"><button type="button" class="btn berry" data-a="bssave">Save and use my buddy</button><button type="button" class="btn" data-a="bsmode" data-v="choose">Back</button></div>
+    </div></div>`}
+  </div></div>`;
+}
+function renderStudio(){let el=document.getElementById("bs-root");if(!el){el=document.createElement("div");el.id="bs-root";document.body.appendChild(el);}el.innerHTML=BS?studioView():"";}
+function openStudio(mode){BS={mode:mode||"choose",draft:Object.assign({},PRESET_BUDDIES[0],{id:null,name:"",saying:""}),confirm:null};renderStudio();}
+function randomBuddy(){const pick=o=>{const k=Object.keys(o);return k[Math.floor(Math.random()*k.length)];};return {body:pick(BODIES),color:BUDDY_COLOURS[Math.floor(Math.random()*BUDDY_COLOURS.length)],ears:pick(EARS),hat:pick(HATS),eyes:pick(EYES),mouth:pick(MOUTHS),extra:pick(EXTRAS),cheeks:Math.random()<.7,personality:pick(PERSONALITY)};}
+
 /* ---------- View state ---------- */
 let tab="home",learnPage=null,enterT=null;
 let quizWrong={},newStamp=null,newEntry=null,lastTick=null;
@@ -2121,7 +2266,7 @@ const view=document.getElementById("view");
 function sessionNext(w){return w.sessions.filter(s=>!s.done&&getR(s.recipe)).sort((a,b)=>a.day-b.day)[0];}
 function pipLine(){
   const w=week(thisWeek),done=w.sessions.filter(s=>s.done).length,next=sessionNext(w),nm=state.name.trim();
-  if(!nm)return "Hi! I'm Pip, your baking buddy. Type your baker name so I know what to call you!";
+  if(!nm)return `Hi! I'm ${BN()}, your baking buddy. Type your baker name so I know what to call you!`;
   if(done===3)return `Three bakes this week, ${nm}! I'm so proud I could do a cartwheel.`;
   if(next)return `${nm}, it's ${getR(next.recipe).name} on ${DAYS[next.day]} with ${next.helper}! I've already got my apron on.`;
   return `Hi ${nm}! Let's pick something yummy to bake this week.`;
@@ -2162,9 +2307,9 @@ function homeView(){
       <div class="namebox"><label for="baker-name" class="eyebrow">My baker name</label><input type="text" id="baker-name" maxlength="24" placeholder="Type your name" value="${esc(state.name)}"></div>
     </div>
     <div class="card pipcorner">
-      <button class="pipfig" data-a="pip" aria-label="Tap Pip for a joke or a fact">${pip()}</button>
+      <button class="pipfig" data-a="pip" aria-label="Tap ${esc(BN())} for a joke or a fact">${pip()}</button>
       <div class="bubble" id="pip-line" aria-live="polite">${esc(pipLine())}</div>
-      <div class="pipfact"><div class="eyebrow">Pip's fact of the day</div><p style="font-weight:700">${esc(fact)}</p></div>
+      <div class="pipfact"><div class="eyebrow">${esc(BN())}'s fact of the day</div><p style="font-weight:700">${esc(fact)}</p><button class="btn small sky" data-a="studio" style="justify-self:start">Change or make my buddy</button></div>
     </div>
   </div>
   <div class="grid g2">
@@ -2418,14 +2563,14 @@ const infoCards=list=>`<div class="grid g2">${list.map(c=>`<div class="card info
 function schoolView(){
   const n=Object.keys(state.lessons).filter(k=>LESSONS.some(l=>l.id===k)).length;
   return `<div class="section">${back}
-  <div><div class="eyebrow">Baking School</div><h2>Learn the secrets</h2><p style="font-weight:700;max-width:60ch">Open a lesson, try the experiment, then answer Pip's quiz question to win 2 stars. You've finished ${n} of ${LESSONS.length}.</p></div>
+  <div><div class="eyebrow">Baking School</div><h2>Learn the secrets</h2><p style="font-weight:700;max-width:60ch">Open a lesson, try the experiment, then answer ${esc(BN())}'s quiz question to win 2 stars. You've finished ${n} of ${LESSONS.length}.</p></div>
   <div class="bar"><i style="width:${n/LESSONS.length*100}%"></i></div>
   <div class="grid g2">
   ${LESSONS.map(l=>{const done=!!state.lessons[l.id];return `<details class="card lesson" id="lesson-${l.id}">
     <summary><span class="ico" style="background:${l.col}">${icon(l.icon)}</span><span class="ttl"><h3>${esc(l.title)}</h3><small>${esc(l.sub)}</small></span>${done?`<span class="done-mark">Done</span>`:""}</summary>
     <div class="body"><ul>${l.body.map(b=>`<li>${esc(b)}</li>`).join("")}</ul>
     <div class="tryit"><b>Try this:</b> ${esc(l.tryit)}</div>
-    <div class="quiz"><div class="eyebrow">Pip's quick quiz${done?"":" · answer right for +2 stars"}</div><div class="q">${esc(l.quiz.q)}</div>
+    <div class="quiz"><div class="eyebrow">${esc(BN())}'s quick quiz${done?"":" · answer right for +2 stars"}</div><div class="q">${esc(l.quiz.q)}</div>
     <div class="opts">${l.quiz.opts.map((o,i)=>`<button class="opt ${done&&i===l.quiz.a?"right":""} ${!done&&quizWrong[l.id]===i?"wrong":""}" data-a="quiz" data-l="${l.id}" data-o="${i}" ${done?"disabled":""}>${esc(o)}</button>`).join("")}</div>
     ${done?`<div class="fb" style="color:var(--mint)">You got it! Lesson complete.</div>`:quizWrong[l.id]!==undefined?`<div class="fb" style="color:var(--berry)">Not quite! Have another read and try again.</div>`:""}</div></div>
   </details>`;}).join("")}
@@ -2535,7 +2680,7 @@ function businessView(){
   <div><div class="eyebrow">Bake a Business</div><h2>A little bakery in a Somerset village</h2><p style="font-weight:700;max-width:62ch">Imagine selling your bakes at the village fête, the Saturday market or the village shop. Here's how real small bakeries get started, from a first bake sale to a proper business.</p></div>
   ${infoCards(BIZ_STEPS)}
   <div class="card mathcard wide"><h3>My mini business plan</h3><p class="muted small">Saved only on this device.</p>
-    <div class="row">${f("name","Business name","e.g. Pip's Village Bakes")}${f("sell","What I'll sell","e.g. cheese scones and apple muffins")}</div>
+    <div class="row">${f("name","Business name","e.g. Sunny Village Bakes")}${f("sell","What I'll sell","e.g. cheese scones and apple muffins")}</div>
     <div class="row">${f("who","Who my customers are","e.g. families at the village fête")}${f("where","Where I'll sell","e.g. the church hall coffee morning")}</div>
     <div class="row">${f("price","My price","e.g. £1.50 each")}${f("special","What makes me special","e.g. Somerset apples and a vegan option")}</div>
     ${f("goal","My goal","e.g. raise £50 for the school library, or save for a stand mixer",1)}
@@ -2726,7 +2871,7 @@ function renderBA(){
     ${T?`<div class="card timer"><div class="machine ${T.running?"on":""}" id="ba-machine">${machineSvg(kind,1-T.left/T.total)}</div><div style="display:grid;gap:10px"><div class="eyebrow">${kind==="oven"?"Oven timer":"Timer"} · ${mins} min</div><div class="t" id="ba-time">${fmtTime(T.left)}</div><div class="btnrow"><button class="btn mint small" data-a="batimer" data-v="go">${T.running?"Pause":(T.left<T.total?"Keep going":"Start timer")}</button><button class="btn small" data-a="batimer" data-v="reset">Reset</button></div><div id="ba-ding" class="muted" style="font-weight:800" role="status"></div></div></div>`:""}
     <div class="ba-nav"><button class="btn" data-a="bastep" data-d="-1" ${BA.step===0?"disabled":""}>← Back</button><button class="btn mango beckon" data-a="bastep" data-d="1">${BA.step===n-1?"I finished!":"Done! Next step →"}</button></div>
     <details class="card"><summary><b>Ingredients</b></summary><ul class="ing" style="margin-top:10px">${r.ing.map(g=>`<li><span>${esc(g.name)}</span><b>${fmtQty(g.qty,g.unit)}</b></li>`).join("")}</ul></details>
-    <div class="note"><b>Pip says:</b> ${esc(r.tip)}</div>
+    <div class="note"><b>${esc(BN())} says:</b> ${esc(r.tip)}</div>
   </div></div>`;
 }
 function chime(){try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();[0,.25,.5].forEach((d,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type="triangle";o.frequency.value=[784,988,1319][i];g.gain.setValueAtTime(.0001,audioCtx.currentTime+d);g.gain.exponentialRampToValueAtTime(.3,audioCtx.currentTime+d+.02);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+d+.4);o.connect(g).connect(audioCtx.destination);o.start(audioCtx.currentTime+d);o.stop(audioCtx.currentTime+d+.45);});}catch(e){}}
@@ -2769,14 +2914,14 @@ document.addEventListener("click",e=>{
   case "go":go(t.dataset.to,t.dataset.anchor);break;
   case "learn":go("learn",null,t.dataset.p||null);break;
   case "motion":state.calm=!state.calm;save();applyMotion();if(!state.calm){render(true);toast("Wiggles are back on!");}break;
-  case "pip":{const line=PIP_TALK[pipIdx++%PIP_TALK.length];const b=document.getElementById("pip-line");if(b){b.textContent=line;b.classList.remove("say");void b.offsetWidth;b.classList.add("say");}t.classList.remove("jump");void t.offsetWidth;t.classList.add("jump");burstAt(t,14);break;}
+  case "pip":{const bd=currentBuddy(),jokes=PIP_TALK.filter(x=>x.includes("?")),tips=PIP_TALK.filter(x=>!x.includes("?")),pool=bd.personality==="silly"?jokes.concat(jokes,tips):bd.personality==="wise"?tips.concat(FACTS):PIP_TALK;const n=pipIdx++;const line=bd.saying&&n%4===3?bd.saying:pool[n%pool.length];const b=document.getElementById("pip-line");if(b){b.textContent=line;b.classList.remove("say");void b.offsetWidth;b.classList.add("say");}t.classList.remove("jump");void t.offsetWidth;t.classList.add("jump");burstAt(t,14);break;}
   case "open":recipeModal(t.dataset.id);break;
   case "scale":MS=+t.dataset.x;recipeModal(modalId);break;
   case "add":{const i=+t.dataset.slot,w=week(viewWeek),r=getR(t.dataset.id);w.sessions[i].recipe=t.dataset.id;w.sessions[i].done=false;w.sessions[i].x=MS;save();closeModal();PICK=null;toast(`${r.name} added to Bake ${i+1}!`);go("planner");break;}
   case "pick":PICK=+t.dataset.slot;go("recipes");break;
   case "cancelpick":PICK=null;go("planner");break;
   case "clearslot":{const s=week(viewWeek).sessions[+t.dataset.slot];s.recipe="";s.done=false;s.x=1;save();render();break;}
-  case "slotsurprise":{const list=LIB.filter(r=>r.level==="easy"&&(r.seasons.length===0||r.seasons.includes(NOW_SEASON)));const r=pickRandom(list);const s=week(viewWeek).sessions[+t.dataset.slot];s.recipe=r.id;s.x=1;s.done=false;save();render();burstAt(t,20);toast(`Pip picked ${r.name}!`);break;}
+  case "slotsurprise":{const list=LIB.filter(r=>r.level==="easy"&&(r.seasons.length===0||r.seasons.includes(NOW_SEASON)));const r=pickRandom(list);const s=week(viewWeek).sessions[+t.dataset.slot];s.recipe=r.id;s.x=1;s.done=false;save();render();burstAt(t,20);toast(`${BN()} picked ${r.name}!`);break;}
   case "week":{const n=+t.dataset.n;if(n===0)viewWeek=thisWeek;else{const d=fromKey(viewWeek);d.setDate(d.getDate()+7*n);viewWeek=dkey(d);}render();break;}
   case "shop":week(viewWeek).shop=t.dataset.shop;save();render();break;
   case "done":{const w=week(viewWeek),s=w.sessions[+t.dataset.slot];const had=stamps(state);s.done=true;save();confetti();const r=getR(s.recipe);if(r&&r.country&&!had.has(r.country))newStamp=r.country;const d=fromKey(viewWeek);d.setDate(d.getDate()+s.day);const dd=d>TODAY?TODAY:d;newDraft({name:r?r.name:"",helper:s.helper,date:dkey(dd)});toast("Amazing baking! Now write about it in your journal.");go("journal");break;}
@@ -2796,6 +2941,19 @@ document.addEventListener("click",e=>{
   case "bajournal":{const r=getR(BA.id);closeBA();newDraft({name:r?r.name:""});go("journal");break;}
   case "quiz":{const id=t.dataset.l,l=LESSONS.find(x=>x.id===id),i=+t.dataset.o;if(i===l.quiz.a){state.lessons[id]=true;delete quizWrong[id];save();confetti();toast("Correct! +2 stars for you.");}else quizWrong[id]=i;render();const d=document.getElementById("lesson-"+id);if(d)d.open=true;break;}
   case "sq":{const q=+t.dataset.q,o=+t.dataset.o;state.safety[q]=o;save();const all=SAFETY_QUIZ.every((x,i)=>state.safety[i]===x.a);if(o===SAFETY_QUIZ[q].a)burstAt(t,16);if(all){confetti();toast("You're a Safety Star!");}render();break;}
+  /* buddy studio */
+  case "studio":openStudio("choose");break;
+  case "bsclose":BS=null;renderStudio();render();break;
+  case "bsmode":BS.mode=t.dataset.v;BS.confirm=null;if(t.dataset.v==="make"&&!BS.draft.id&&!BS.draft.name)BS.draft=Object.assign({},currentBuddy(),{id:null,name:"",saying:""});renderStudio();break;
+  case "bsuse":{state.buddy=t.dataset.id;save();renderStudio();render();burstAt(t,24);toast(`Hello! I'm ${BN()}, your new baking buddy!`);break;}
+  case "bsedit":{const b=state.buddies.find(x=>x.id===t.dataset.id);BS.draft=Object.assign({},b);BS.mode="make";renderStudio();break;}
+  case "bsaskdel":BS.confirm=t.dataset.id;renderStudio();break;
+  case "bsnodel":BS.confirm=null;renderStudio();break;
+  case "bsdel":{state.buddies=state.buddies.filter(x=>x.id!==t.dataset.id);if(state.buddy===t.dataset.id)state.buddy="pip";BS.confirm=null;save();renderStudio();render();break;}
+  case "bspart":BS.draft[t.dataset.k]=t.dataset.v;renderStudio();break;
+  case "bscheeks":BS.draft.cheeks=!BS.draft.cheeks;renderStudio();break;
+  case "bsrandom":Object.assign(BS.draft,randomBuddy());renderStudio();break;
+  case "bssave":{const d=BS.draft;if(!(d.name||"").trim()){toast("Give your buddy a name first!");const n=document.getElementById("bs-name");if(n)n.focus();break;}d.name=d.name.trim();if(!d.id){d.id="my-"+Date.now().toString(36);state.buddies.push(Object.assign({},d));}else state.buddies=state.buddies.map(b=>b.id===d.id?Object.assign({},d):b);state.buddy=d.id;save();BS=null;renderStudio();render();confetti();toast(`Hello! I'm ${state.buddies.find(b=>b.id===state.buddy).name}, your new baking buddy!`);break;}
   /* recipe editor */
   case "newcustom":ED=blankED();edError="";closeModal();renderEditor();break;
   case "makeown":{const r=getR(t.dataset.id);ED=edFromRecipe(r);edError="";closeModal();renderEditor();break;}
@@ -2858,6 +3016,7 @@ document.addEventListener("change",async e=>{
 });
 document.addEventListener("input",e=>{
   const t=e.target;
+  if(BS&&t.dataset.bs){BS.draft[t.dataset.bs]=t.value;const pv=document.querySelector(".studiopreview h3");if(pv&&t.dataset.bs==="name")pv.textContent=t.value||"My buddy";const bb=document.querySelector(".studiopreview .bubble");if(bb&&t.dataset.bs==="saying")bb.textContent=t.value||"Hello! I'm your new baking buddy.";return;}
   if(t.id==="baker-name"){state.name=t.value;save();const h=document.getElementById("hello-name");if(h)h.textContent=state.name.trim()||"Super Baker";const pl=document.getElementById("pip-line");if(pl)pl.textContent=pipLine();return;}
   if(t.id==="rb-q"){RB.q=t.value;RB.shown=24;clearTimeout(rbT);rbT=setTimeout(()=>{const pos=t.selectionStart;render();const n=document.getElementById("rb-q");if(n){n.focus();try{n.setSelectionRange(pos,pos);}catch(_){}}},250);return;}
   if(ED){
@@ -2896,7 +3055,7 @@ document.addEventListener("submit",e=>{
   if(r&&r.country&&!before.has(r.country))newStamp=r.country;
   toast(r&&r.country&&!before.has(r.country)?`New passport stamp: ${r.country}!`:"Page added to your journal!");render();
 });
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(ED){ED=null;renderEditor();}else if(BA)closeBA();else closeModal();}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(BS){BS=null;renderStudio();render();}else if(ED){ED=null;renderEditor();}else if(BA)closeBA();else closeModal();}});
 document.getElementById("motion-toggle").addEventListener("click",()=>{state.calm=!state.calm;save();applyMotion();if(!state.calm){render(true);toast("Wiggles are back on!");}});
 
 /* ---------- Start ---------- */
